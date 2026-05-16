@@ -503,16 +503,39 @@ main {
         grid-template-columns: repeat(3, 1fr);
     }
 }
+/* Ocultar elementos en desktop que solo son para móvil */
+.mobile-only {
+    display: none !important;
+}
+
 @media (max-width: 768px) {
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
     }
     header {
         flex-wrap: wrap;
+        padding: 0.5rem 1rem;
+    }
+    .header-top {
+        gap: 0.5rem;
     }
     .search-bar {
         order: 3;
         max-width: 100%;
+        margin-top: 0.5rem;
+    }
+    /* Ocultar las acciones del header y el texto del logo en móvil */
+    .header-actions, 
+    .logo-container span {
+        display: none !important;
+    }
+    /* Mostrar elementos específicos de móvil en el sidebar */
+    .mobile-only {
+        display: flex !important;
+    }
+    .sidebar .menu-item i {
+        width: 20px;
+        color: var(--primary-blue);
     }
 }
 
