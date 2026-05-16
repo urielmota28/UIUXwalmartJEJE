@@ -32,9 +32,9 @@ function generarTarjeta(prod) {
                 <span class="icon-placeholder" style="width: 20px; height: 20px; background: transparent;"></span>
             </button>
             
-            <div class="image-placeholder" onclick="openProduct(${prod.id}, '${safeName}', '${prod.precio}')">
+            <button type="button" class="image-placeholder" onclick="openProduct(${prod.id}, '${safeName}', '${prod.precio}')">
                 <span>Img [${prod.id}]</span>
-            </div>
+            </button>
             
             <div class="card-actions">
                 <button class="btn-buy-icon" onclick="comprarRapido(${prod.id}, '${safeName}', '${prod.precio}')" title="Comprar ahora">
@@ -46,12 +46,12 @@ function generarTarjeta(prod) {
                 </button>
             </div>
 
-            <div class="card-content" onclick="openProduct(${prod.id}, '${safeName}', '${prod.precio}')">
+            <button type="button" class="card-content" onclick="openProduct(${prod.id}, '${safeName}', '${prod.precio}')">
                 <div class="product-price">${prod.precio}</div>
                 <div class="product-title">${prod.nombre}</div>
                 <div class="product-brand">Marca Genérica</div>
                 <div class="product-desc">Descripción simulada del artículo para coincidir con la referencia visual.</div>
-            </div>
+            </button>
         </article>
     `;
 }
@@ -84,10 +84,10 @@ function renderSections() {
 function setupCategoriasRapidas() {
     const nombres = ["Ahorro", "Flash Deals", "Nuestras Marcas", "Walmart Pass", "Súper", "Prichos", "Goleada", "Express"];
     $('quickCategories').innerHTML = nombres.map((n, i) => `
-        <div class="cat-item" onclick="abrirCategoria('${n}')">
+        <button type="button" class="cat-item" onclick="abrirCategoria('${n}')">
             <div class="cat-img">Img ${i+1}</div>
             <span style="font-weight: bold; font-size: 0.9rem; color: var(--text-blue);">${n}</span>
-        </div>
+        </button>
     `).join('');
 }
 
@@ -103,8 +103,8 @@ function navigate(viewId, viewName = '') {
     window.scrollTo(0, 0);
 
     const breadcrumb = $('breadcrumb-container');
-    if(viewId === 'home') breadcrumb.innerHTML = `<span onclick="navigate('home')">Inicio</span>`;
-    else breadcrumb.innerHTML = `<span onclick="navigate('home')">Inicio</span> > <span style="font-weight:bold;">${viewName}</span>`;
+    if(viewId === 'home') breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button>`;
+    else breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
 
     if(viewId === 'cart') renderCart();
     if(viewId === 'favorites') renderFavs();

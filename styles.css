@@ -69,6 +69,50 @@ button {
     font-family: inherit;
     transition: var(--transition);
 }
+/* Reset para botones que reemplazan elementos no semánticos */
+.logo-container,
+.breadcrumbs button,
+.cat-item,
+.image-placeholder,
+.card-content,
+.footer-section button {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    font-size: inherit;
+    font-family: inherit;
+    color: inherit;
+    text-align: inherit;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+}
+.logo-container {
+    display: flex;
+    width: auto;
+}
+.breadcrumbs button {
+    display: inline;
+    width: auto;
+}
+.breadcrumbs button:hover {
+    text-decoration: underline;
+}
+.cat-item {
+    width: auto;
+}
+.footer-section button {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+.footer-section button:hover {
+    color: #fff;
+    text-decoration: underline;
+}
 .hidden {
     display: none !important;
 }

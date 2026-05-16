@@ -28,14 +28,14 @@
                             style="color: rgb(255, 212, 59)"
                         ></i>
                     </button>
-                    <div class="logo-container" onclick="navigate('home')">
+                    <button class="logo-container" onclick="navigate('home')" aria-label="Ir al inicio">
                         <img
                             src="walmartlogo.png"
                             alt="Logo de Walmart"
                             class="logo-img"
                         />
                         <span>Walmart</span>
-                    </div>
+                    </button>
                 </div>
 
                 <div class="search-bar">
@@ -98,7 +98,7 @@
                 </div>
             </div>
             <nav class="breadcrumbs" id="breadcrumb-container">
-                <span onclick="navigate('home')">Inicio</span>
+                <button type="button" onclick="navigate('home')">Inicio</button>
             </nav>
         </header>
 
@@ -549,9 +549,9 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>Atención al Cliente</h4>
-                    <p onclick="navigate('faq', 'Centro de Ayuda')">
+                    <button type="button" onclick="navigate('faq', 'Centro de Ayuda')">
                         Centro de Ayuda
-                    </p>
+                    </button>
                     <p>Términos y Condiciones</p>
                 </div>
                 <div class="footer-section">
