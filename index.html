@@ -144,12 +144,20 @@
                 <button class="close-modal" onclick="closeModals()">✖</button>
                 <h2 style="margin-bottom: 1.5rem">Iniciar Sesión</h2>
                 <div class="input-group">
-                    <label>Correo</label
-                    ><input type="email" placeholder="ejemplo@correo.com" />
+                    <label for="login-email">Correo</label>
+                    <input
+                        type="email"
+                        id="login-email"
+                        placeholder="ejemplo@correo.com"
+                    />
                 </div>
                 <div class="input-group">
-                    <label>Contraseña</label
-                    ><input type="password" placeholder="********" />
+                    <label for="login-password">Contraseña</label>
+                    <input
+                        type="password"
+                        id="login-password"
+                        placeholder="********"
+                    />
                 </div>
                 <button class="btn-full" onclick="closeModals()">
                     Confirmar
@@ -162,24 +170,36 @@
                 <button class="close-modal" onclick="closeModals()">✖</button>
                 <h2 style="margin-bottom: 1.5rem">Crear Cuenta</h2>
                 <div class="input-group">
-                    <label>Nombre Completo</label
-                    ><input type="text" placeholder="Juan Pérez" />
+                    <label for="reg-name">Nombre Completo</label>
+                    <input type="text" id="reg-name" placeholder="Juan Pérez" />
                 </div>
                 <div class="input-group">
-                    <label>País</label
-                    ><input type="text" placeholder="México" />
+                    <label for="reg-country">País</label>
+                    <input type="text" id="reg-country" placeholder="México" />
                 </div>
                 <div class="input-group">
-                    <label>Correo</label
-                    ><input type="email" placeholder="ejemplo@correo.com" />
+                    <label for="reg-email">Correo</label>
+                    <input
+                        type="email"
+                        id="reg-email"
+                        placeholder="ejemplo@correo.com"
+                    />
                 </div>
                 <div class="input-group">
-                    <label>Contraseña</label
-                    ><input type="password" placeholder="********" />
+                    <label for="reg-password">Contraseña</label>
+                    <input
+                        type="password"
+                        id="reg-password"
+                        placeholder="********"
+                    />
                 </div>
                 <div class="input-group">
-                    <label>Repetir Contraseña</label
-                    ><input type="password" placeholder="********" />
+                    <label for="reg-password-confirm">Repetir Contraseña</label>
+                    <input
+                        type="password"
+                        id="reg-password-confirm"
+                        placeholder="********"
+                    />
                 </div>
                 <button class="btn-full" onclick="closeModals()">
                     Registrarse

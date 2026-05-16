@@ -185,7 +185,7 @@ header {
 
 .breadcrumbs {
     font-size: 0.85rem;
-    color: var(--accent-yellow);
+    color: #ffffff;
 }
 .breadcrumbs span {
     cursor: pointer;
@@ -576,11 +576,7 @@ main {
     color: var(--text-title);
     margin-bottom: 0.5rem;
 }
-.product-desc {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    line-height: 1.3;
-}
+.product-desc { font-size: 0.85rem; color: var(--text-title); line-height: 1.4; }
 
 /* =========================================
    Detail Views
