@@ -1,0 +1,249 @@
+/* =========================================
+   Design Tokens & Variables
+   ========================================= */
+:root {
+    --primary-blue: #0071CE;
+    --secondary-blue: #004F9A;
+    --accent-yellow: #FFC220;
+    --text-dark: #2E2F32;
+    --text-light: #68696A;
+    --bg-light: #F2F8FD;
+    --white: #FFFFFF;
+    --danger: #E32727;
+    --border-radius: 8px;
+    --font-family: 'Bogle', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --transition: all 0.3s ease;
+    
+    /* Variables de texto para contraste en modo oscuro */
+    --text-blue: #0071CE; 
+    --text-title: #004F9A;
+
+    /* Variables de tarjeta basadas en la referencia visual */
+    --card-bg: #E2E3E5;
+    --card-img-bg: #FFFFFF;
+}
+
+body.dark-mode {
+    --primary-blue: #005A9E;
+    --secondary-blue: #003366;
+    --accent-yellow: #E6AC00;
+    --text-dark: #F2F8FD;
+    --text-light: #A0A0A0;
+    --bg-light: #121212;
+    --white: #1E1E1E;
+    
+    /* Los azules se vuelven blancos en tema oscuro por contraste */
+    --text-blue: #FFFFFF;
+    --text-title: #FFFFFF;
+
+    /* Tarjetas en modo oscuro */
+    --card-bg: #2A2C2F;
+    --card-img-bg: #1A1A1A;
+}
+
+/* =========================================
+   Global Styles & Accessibility
+   ========================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; transition: font-size 0.3s ease; }
+body { font-family: var(--font-family); background-color: var(--bg-light); color: var(--text-dark); overflow-x: hidden; transition: background-color 0.3s, color 0.3s; }
+button { cursor: pointer; font-family: inherit; transition: var(--transition); }
+.hidden { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+
+/* =========================================
+   Header, Navigation & Breadcrumbs
+   ========================================= */
+header {
+    background-color: var(--primary-blue);
+    color: #FFFFFF; /* Fijo para que no se oscurezca */
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    transition: background-color 0.3s;
+}
+
+.header-top { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; margin-bottom: 0.5rem; }
+.header-left { display: flex; align-items: center; gap: 1rem; }
+
+/* Placeholder Maestro para Iconos */
+.icon-placeholder { width: 24px; height: 24px; background-color: rgba(255,255,255,0.3); border-radius: 4px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.icon-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+
+.logo-container { display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem; font-weight: bold; cursor: pointer; }
+.logo-icon { width: 30px; height: 30px; background-color: var(--accent-yellow); border-radius: 50%; }
+
+.search-bar { flex-grow: 1; display: flex; max-width: 600px; }
+.search-bar input { width: 100%; padding: 0.75rem 1rem; border: none; border-radius: 20px 0 0 20px; outline: none; }
+.search-bar button { padding: 0.75rem 1.5rem; background-color: var(--accent-yellow); border: none; border-radius: 0 20px 20px 0; font-weight: bold; color: #2E2F32;}
+
+.header-actions { display: flex; gap: 1.5rem; }
+.action-btn { background: none; border: none; color: #FFFFFF; display: flex; flex-direction: column; align-items: center; font-size: 0.85rem; gap: 0.2rem; }
+
+.breadcrumbs { font-size: 0.85rem; color: rgba(255,255,255,0.8); }
+.breadcrumbs span { cursor: pointer; }
+.breadcrumbs span:hover { text-decoration: underline; color: #fff; }
+
+/* =========================================
+   Sidebar Menu (Hamburger)
+   ========================================= */
+.sidebar-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 200; opacity: 0; pointer-events: none; transition: var(--transition); }
+.sidebar-overlay.active { opacity: 1; pointer-events: all; }
+.sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100vh; background: var(--white); z-index: 201; transition: var(--transition); padding: 2rem 1rem; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+.sidebar.active { left: 0; }
+.close-sidebar { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-dark); }
+.sidebar h3 { margin-bottom: 1.5rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; color: var(--text-dark);}
+.menu-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #eee; cursor: pointer; font-weight: 500; color: var(--text-dark); }
+.menu-item:hover { color: var(--text-blue); }
+
+/* =========================================
+   Modals
+   ========================================= */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: var(--transition); }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+.modal-box { background: var(--white); color: var(--text-dark); padding: 2rem; border-radius: var(--border-radius); width: 90%; max-width: 400px; position: relative; transform: translateY(-20px); transition: var(--transition); box-shadow: 0 10px 25px rgba(0,0,0,0.2);}
+.modal-overlay.active .modal-box { transform: translateY(0); }
+.close-modal { position: absolute; top: 1rem; right: 1rem; background: none; border: none; font-size: 1.5rem; color: var(--text-dark); }
+.input-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+.input-group input, .input-group textarea, .input-group select { padding: 0.8rem; border: 1px solid var(--text-light); border-radius: var(--border-radius); background: var(--bg-light); color: var(--text-dark); font-family: inherit;}
+.btn-full { width: 100%; padding: 0.8rem; background: var(--primary-blue); color: #fff; border: none; border-radius: 20px; font-weight: bold; margin-top: 1rem; }
+
+/* =========================================
+   Main Layout & Views
+   ========================================= */
+main { max-width: 1300px; margin: 2rem auto; padding: 0 1rem; min-height: 60vh;}
+.view-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+.btn-back { padding: 0.5rem 1rem; background: var(--white); color: var(--text-dark); border: 1px solid #ccc; border-radius: 20px; font-weight: bold; }
+.section-divider { border: 0; height: 2px; background: #D9D9D9; margin: 3rem 0; border-radius: 2px; }
+
+/* =========================================
+   Carousel & Quick Categories
+   ========================================= */
+.carousel { position: relative; height: 300px; background: var(--secondary-blue); border-radius: var(--border-radius); overflow: hidden; margin-bottom: 2rem; display: flex; align-items: center; justify-content: center; color: #fff;}
+.slide { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: 0.5s; text-align: center;}
+.slide.active { opacity: 1; z-index: 10; }
+.car-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: #fff; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; z-index: 20; }
+
+.cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 3rem; }
+@media (max-width: 768px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+.cat-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; cursor: pointer; transition: transform 0.2s; }
+.cat-item:hover { transform: scale(1.05); }
+.cat-img { width: 100%; height: 100px; background: var(--white); border-radius: var(--border-radius); border: 2px solid var(--text-blue); display: flex; align-items: center; justify-content: center; color: var(--text-blue); font-weight: bold; }
+
+/* =========================================
+   Product Grid & Cards (Rediseño Ref: iPad)
+   ========================================= */
+.section-title { margin-bottom: 1.5rem; font-size: 1.5rem; color: var(--text-title); }
+.product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; }
+@media (max-width: 1024px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .product-grid { grid-template-columns: repeat(2, 1fr); } header { flex-wrap: wrap; } .search-bar { order: 3; max-width: 100%; } }
+
+/* Contenedor principal de la tarjeta con fondo gris */
+.product-card { 
+    background-color: var(--card-bg); 
+    border-radius: 16px; 
+    padding: 0; 
+    display: flex; 
+    flex-direction: column; 
+    position: relative; 
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+
+/* Botón favoritos (Amarillo, Esquina superior derecha curvo) */
+.btn-fav { 
+    position: absolute; 
+    top: -5px; 
+    right: -5px; 
+    width: 45px; 
+    height: 45px; 
+    background-color: var(--accent-yellow); 
+    border: none; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    z-index: 10; 
+    overflow: hidden; 
+}
+
+/* Espacio Blanco curvo para la Imagen */
+.image-placeholder { 
+    width: 100%; 
+    height: 220px; 
+    background-color: var(--card-img-bg); 
+    border-radius: 16px 16px 35px 35px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: var(--text-light); 
+    font-size: 0.8rem; 
+    overflow: hidden; 
+    cursor: pointer; 
+}
+
+/* Botones amarillos flotantes entre la imagen y el texto */
+.card-actions { 
+    display: flex; 
+    gap: 1rem; 
+    align-items: center; 
+    justify-content: center; 
+    margin-top: -20px; 
+    margin-bottom: 1rem; 
+    position: relative; 
+    z-index: 2; 
+}
+
+.btn-buy-icon, .btn-add-icon { 
+    width: 70px; 
+    height: 40px; 
+    background-color: var(--accent-yellow); 
+    border: none; 
+    border-radius: 12px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    flex-shrink: 0; 
+    overflow: hidden;
+    transition: transform 0.1s;
+}
+.btn-buy-icon:hover, .btn-add-icon:hover { transform: scale(1.05); }
+
+/* Contenedor de Texto */
+.card-content {
+    padding: 0 1.25rem 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.product-price { font-size: 1.6rem; font-weight: 900; color: var(--text-title); margin-bottom: 0.25rem; }
+.product-title { font-size: 1.1rem; font-weight: bold; color: var(--text-title); margin-bottom: 0.25rem; line-height: 1.2; }
+.product-brand { font-size: 0.9rem; color: var(--text-title); margin-bottom: 0.5rem; }
+.product-desc { font-size: 0.8rem; color: var(--text-light); line-height: 1.3; }
+
+/* =========================================
+   Detail Views
+   ========================================= */
+.product-detail-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; background: var(--white); padding: 2rem; border-radius: var(--border-radius); }
+.detail-image { width: 100%; height: 400px; background-color: var(--card-img-bg); border-radius: var(--border-radius); display: flex; align-items: center; justify-content: center; color: var(--text-light);}
+.detail-info h2 { font-size: 2rem; margin-bottom: 1rem; }
+.detail-info .price { font-size: 2.5rem; font-weight: bold; color: var(--text-blue); margin-bottom: 2rem; }
+.detail-actions { display: flex; gap: 1rem; }
+.detail-actions button { padding: 1rem 2rem; font-size: 1.1rem; border-radius: 30px; }
+.btn-primary { background: var(--primary-blue); color: #FFFFFF; border: none; flex-grow: 1;}
+
+.list-container { background: var(--white); border-radius: var(--border-radius); padding: 2rem; }
+.list-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem; border-bottom: 1px solid var(--bg-light); }
+
+/* =========================================
+   Footer
+   ========================================= */
+footer { background: var(--secondary-blue); color: #fff; padding: 3rem 2rem 1rem 2rem; margin-top: 4rem; }
+.footer-content { max-width: 1300px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 2rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 2rem; }
+.footer-section h4 { margin-bottom: 1rem; font-size: 1.2rem; }
+.footer-section p { margin-bottom: 0.5rem; font-size: 0.9rem; cursor: pointer; color: #ccc; }
+.footer-section p:hover { color: #fff; text-decoration: underline; }
+.footer-bottom { text-align: center; padding-top: 1rem; font-size: 0.8rem; color: #ccc; }
