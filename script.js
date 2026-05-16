@@ -13,6 +13,19 @@ const formatPrice = (num) =>
   });
 
 /* =========================================
+   Accesibilidad: Anunciador ARIA
+   ========================================= */
+const announce = (message) => {
+  const announcer = $("aria-announcer");
+  if (announcer) {
+    announcer.textContent = ""; // Limpiar mensaje anterior
+    setTimeout(() => {
+      announcer.textContent = message;
+    }, 100); // Pequeño delay para forzar al lector a detectar el cambio
+  }
+};
+
+/* =========================================
    Base de Datos Mock
    ========================================= */
 const categorias = [
@@ -239,6 +252,9 @@ function addToCart(id, nombre, precio, event) {
   carrito.push({ id, nombre, precio });
   $("cartCount").textContent = `Carrito (${carrito.length})`;
 
+  // Anuncio para lectores de pantalla
+  announce(`${nombre} ha sido agregado al carrito.`);
+
   if (event && event.currentTarget) {
     const btn = event.currentTarget;
     
@@ -288,10 +304,12 @@ function toggleFav(id, nombre, precio, event) {
     favoritos.push({ id, nombre, precio });
     btn.style.backgroundColor = "var(--primary-blue)";
     icon.classList.replace("fa-regular", "fa-solid");
+    announce(`${nombre} agregado a favoritos.`);
   } else {
     favoritos.splice(index, 1);
     btn.style.backgroundColor = "var(--accent-yellow)";
     icon.classList.replace("fa-solid", "fa-regular");
+    announce(`${nombre} eliminado de favoritos.`);
   }
 }
 
