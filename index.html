@@ -1,260 +1,557 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prototipo UX - Rediseño Tienda</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-    <header>
-        <div class="header-top">
-            <div class="header-left">
-                <button id="menuBtn" class="action-btn" aria-label="Abrir menú">
-                    <span class="icon-placeholder"></span>
-                </button>
-                <div class="logo-container" onclick="navigate('home')">
-                    <div class="icon-placeholder logo-icon"></div>
-                    <span>Walmart*</span>
-                </div>
-            </div>
-            
-            <div class="search-bar">
-                <label for="searchInput" class="sr-only">Buscar productos</label>
-                <input type="text" id="searchInput" placeholder="¿Qué estás buscando?">
-                <button id="searchBtn">Buscar</button>
-            </div>
-
-            <div class="header-actions">
-                <button class="action-btn" onclick="toggleTheme()" title="Cambiar Tema">
-                    <span class="icon-placeholder" style="border-radius:50%"></span>
-                    <span>Tema</span>
-                </button>
-                <button class="action-btn" onclick="navigate('account', 'Mi Cuenta')">
-                    <span class="icon-placeholder" style="border-radius:50%"></span>
-                    <span>Cuenta</span>
-                </button>
-                <button class="action-btn" onclick="navigate('favorites', 'Favoritos')">
-                    <span class="icon-placeholder" style="border-radius:50%"></span>
-                    <span>Favoritos</span>
-                </button>
-                <button class="action-btn" onclick="navigate('cart', 'Carrito')">
-                    <span class="icon-placeholder"></span>
-                    <span id="cartCount">Carrito (0)</span>
-                </button>
-            </div>
-        </div>
-        <nav class="breadcrumbs" id="breadcrumb-container">
-            <span onclick="navigate('home')">Inicio</span>
-        </nav>
-    </header>
-
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <aside class="sidebar" id="sidebar">
-        <button class="close-sidebar" id="closeSidebar" aria-label="Cerrar menú">✖</button>
-        <h3>Menú</h3>
-        <div class="menu-item">
-            <span class="icon-placeholder" style="width:20px; height:20px; background-color: var(--text-light);"></span>
-            📍 Agregar ubicación de entrega
-        </div>
-        <div class="menu-item">
-            <span class="icon-placeholder" style="width:20px; height:20px; background-color: var(--text-light);"></span>
-            Departamentos
-        </div>
-        <div class="menu-item">Electrónica</div>
-        <div class="menu-item">Hogar y Muebles</div>
-        <div class="menu-item">Despensa</div>
-    </aside>
-
-    <div class="modal-overlay" id="loginModal">
-        <div class="modal-box">
-            <button class="close-modal" onclick="closeModals()">✖</button>
-            <h2 style="margin-bottom: 1.5rem;">Iniciar Sesión</h2>
-            <div class="input-group"><label>Correo</label><input type="email" placeholder="ejemplo@correo.com"></div>
-            <div class="input-group"><label>Contraseña</label><input type="password" placeholder="********"></div>
-            <button class="btn-full" onclick="closeModals()">Confirmar</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal-box">
-            <button class="close-modal" onclick="closeModals()">✖</button>
-            <h2 style="margin-bottom: 1.5rem;">Crear Cuenta</h2>
-            <div class="input-group"><label>Nombre Completo</label><input type="text" placeholder="Juan Pérez"></div>
-            <div class="input-group"><label>País</label><input type="text" placeholder="México"></div>
-            <div class="input-group"><label>Correo</label><input type="email" placeholder="ejemplo@correo.com"></div>
-            <div class="input-group"><label>Contraseña</label><input type="password" placeholder="********"></div>
-            <div class="input-group"><label>Repetir Contraseña</label><input type="password" placeholder="********"></div>
-            <button class="btn-full" onclick="closeModals()">Registrarse</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="checkoutModal">
-        <div class="modal-box">
-            <button class="close-modal" onclick="cerrarTicket()">✖</button>
-            <h2 style="margin-bottom: 1.5rem; color: var(--text-title);">Ticket de compra</h2>
-            
-            <div id="checkoutSummary" style="margin-bottom: 1.5rem; color: var(--text-dark); max-height: 150px; overflow-y: auto; background: var(--bg-light); padding: 1rem; border-radius: var(--border-radius);">
-                </div>
-
-            <div class="input-group">
-                <label style="font-weight: bold; color: var(--text-dark);">Método de pago</label>
-                <select id="paymentMethod" style="padding: 0.8rem; border: 1px solid var(--text-light); border-radius: var(--border-radius); background: var(--white); color: var(--text-dark); font-family: inherit; font-size: 1rem; width: 100%;">
-                    <option value="paypal">PayPal</option>
-                    <option value="mastercard">MasterCard</option>
-                    <option value="visa">Visa</option>
-                    <option value="tienda">Pago en tienda</option>
-                </select>
-            </div>
-            
-            <button class="btn-full" onclick="cerrarTicket()">Confirmar y Pagar</button>
-        </div>
-    </div>
-
-    <main>
-        <div id="view-home">
-            <div class="carousel">
-                <button class="car-btn" style="left:1rem" onclick="moveCarousel(-1)">❮</button>
-                <div class="slide active">
-                    <h2>¡Bienvenido a Walmart!</h2>
-                    <p>Encuentra todo lo que necesitas.</p>
-                </div>
-                <div class="slide">
-                    <h2 style="color: var(--accent-yellow);">Promoción Especial</h2>
-                    <p>Hasta 50% de descuento en Electrónica.</p>
-                </div>
-                <div class="slide">
-                    <h2 style="color: #66ff66;">Súper Días</h2>
-                    <p>Ahorra en tu despensa semanal.</p>
-                </div>
-                <button class="car-btn" style="right:1rem" onclick="moveCarousel(1)">❯</button>
-            </div>
-
-            <div class="cat-grid" id="quickCategories"></div>
-
-            <hr class="section-divider">
-
-            <div id="sections-container"></div>
-        </div>
-
-        <div id="view-category" class="hidden">
-            <div class="view-header">
-                <button class="btn-back" onclick="navigate('home')">← Volver</button>
-                <h2 id="category-title">Categoría</h2>
-            </div>
-            <div class="product-grid" id="category-grid"></div>
-        </div>
-
-        <div id="view-account" class="hidden">
-            <div class="view-header"><h2>Mi Cuenta</h2></div>
-            <div class="list-container" style="max-width: 600px; margin: 0 auto;">
-                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                    <div class="icon-placeholder" style="width: 80px; height: 80px; border-radius: 50%; background-color: var(--primary-blue);"></div>
-                    <div>
-                        <h3>Información del Cliente</h3>
-                        <p style="color: var(--text-light);">Inicia sesión para ver tus datos</p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Prototipo UX - Rediseño Tienda</title>
+        <link rel="stylesheet" href="styles.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+    </head>
+    <body>
+        <header>
+            <div class="header-top">
+                <div class="header-left">
+                    <button
+                        id="menuBtn"
+                        class="action-btn"
+                        aria-label="Abrir menú"
+                    >
+                        <i
+                            class="fa-solid fa-bars"
+                            style="color: rgb(255, 212, 59)"
+                        ></i>
+                        <span class="icon-placeholder"></span>
+                    </button>
+                    <div class="logo-container" onclick="navigate('home')">
+                        <img src="Walmart.svg" alt="Logo" class="logo-img">
+                        <span>Walmart*</span>
                     </div>
                 </div>
-                
+
+                <div class="search-bar">
+                    <label for="searchInput" class="sr-only"
+                        >Buscar productos</label
+                    >
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="¿Qué estás buscando?"
+                    />
+                    <button id="searchBtn">Buscar</button>
+                </div>
+
+                <div class="header-actions">
+                    <button
+                        class="action-btn"
+                        onclick="toggleTheme()"
+                        title="Cambiar Tema"
+                    >
+                        <i
+                            class="fa-solid fa-circle-half-stroke"
+                            style="color: rgb(255, 212, 59)"
+                        ></i>
+                        <span
+                            class="icon-placeholder"
+                            style="border-radius: 50%"
+                        ></span>
+                        <span>Tema</span>
+                    </button>
+                    <button
+                        class="action-btn"
+                        onclick="navigate('account', 'Mi Cuenta')"
+                    >
+                        <i
+                            class="fa-solid fa-circle-user"
+                            style="color: rgb(255, 212, 59)"
+                        ></i>
+                        <span
+                            class="icon-placeholder"
+                            style="border-radius: 50%"
+                        ></span>
+                        <span>Cuenta</span>
+                    </button>
+                    <button
+                        class="action-btn"
+                        onclick="navigate('favorites', 'Favoritos')"
+                    >
+                        <i
+                            class="fa-solid fa-heart"
+                            style="color: rgb(255, 212, 59)"
+                        ></i>
+                        <span
+                            class="icon-placeholder"
+                            style="border-radius: 50%"
+                        ></span>
+                        <span>Favoritos</span>
+                    </button>
+                    <button
+                        class="action-btn"
+                        onclick="navigate('cart', 'Carrito')"
+                    >
+                        <i
+                            class="fa-solid fa-cart-shopping"
+                            style="color: rgb(255, 212, 59)"
+                        ></i>
+                        <span class="icon-placeholder"></span>
+                        <span id="cartCount">Carrito (0)</span>
+                    </button>
+                </div>
+            </div>
+            <nav class="breadcrumbs" id="breadcrumb-container">
+                <span onclick="navigate('home')">Inicio</span>
+            </nav>
+        </header>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <aside class="sidebar" id="sidebar">
+            <button
+                class="close-sidebar"
+                id="closeSidebar"
+                aria-label="Cerrar menú"
+            >
+                ✖
+            </button>
+            <h3>Menú</h3>
+            <div class="menu-item">
+                <span
+                    class="icon-placeholder"
+                    style="
+                        width: 20px;
+                        height: 20px;
+                        background-color: var(--text-light);
+                    "
+                ></span>
+                📍 Agregar ubicación de entrega
+            </div>
+            <div class="menu-item">
+                <span
+                    class="icon-placeholder"
+                    style="
+                        width: 20px;
+                        height: 20px;
+                        background-color: var(--text-light);
+                    "
+                ></span>
+                Departamentos
+            </div>
+            <div class="menu-item">Electrónica</div>
+            <div class="menu-item">Hogar y Muebles</div>
+            <div class="menu-item">Despensa</div>
+        </aside>
+
+        <div class="modal-overlay" id="loginModal">
+            <div class="modal-box">
+                <button class="close-modal" onclick="closeModals()">✖</button>
+                <h2 style="margin-bottom: 1.5rem">Iniciar Sesión</h2>
                 <div class="input-group">
-                    <label>Notas o información adicional del cliente:</label>
-                    <textarea rows="3" placeholder="Escribe aquí..."></textarea>
+                    <label>Correo</label
+                    ><input type="email" placeholder="ejemplo@correo.com" />
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label
+                    ><input type="password" placeholder="********" />
+                </div>
+                <button class="btn-full" onclick="closeModals()">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="registerModal">
+            <div class="modal-box">
+                <button class="close-modal" onclick="closeModals()">✖</button>
+                <h2 style="margin-bottom: 1.5rem">Crear Cuenta</h2>
+                <div class="input-group">
+                    <label>Nombre Completo</label
+                    ><input type="text" placeholder="Juan Pérez" />
+                </div>
+                <div class="input-group">
+                    <label>País</label
+                    ><input type="text" placeholder="México" />
+                </div>
+                <div class="input-group">
+                    <label>Correo</label
+                    ><input type="email" placeholder="ejemplo@correo.com" />
+                </div>
+                <div class="input-group">
+                    <label>Contraseña</label
+                    ><input type="password" placeholder="********" />
+                </div>
+                <div class="input-group">
+                    <label>Repetir Contraseña</label
+                    ><input type="password" placeholder="********" />
+                </div>
+                <button class="btn-full" onclick="closeModals()">
+                    Registrarse
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="checkoutModal">
+            <div class="modal-box">
+                <button class="close-modal" onclick="cerrarTicket()">✖</button>
+                <h2 style="margin-bottom: 1.5rem; color: var(--text-title)">
+                    Ticket de compra
+                </h2>
+
+                <div
+                    id="checkoutSummary"
+                    style="
+                        margin-bottom: 1.5rem;
+                        color: var(--text-dark);
+                        max-height: 150px;
+                        overflow-y: auto;
+                        background: var(--bg-light);
+                        padding: 1rem;
+                        border-radius: var(--border-radius);
+                    "
+                ></div>
+
+                <div class="input-group">
+                    <label style="font-weight: bold; color: var(--text-dark)"
+                        >Método de pago</label
+                    >
+                    <select
+                        id="paymentMethod"
+                        style="
+                            padding: 0.8rem;
+                            border: 1px solid var(--text-light);
+                            border-radius: var(--border-radius);
+                            background: var(--white);
+                            color: var(--text-dark);
+                            font-family: inherit;
+                            font-size: 1rem;
+                            width: 100%;
+                        "
+                    >
+                        <option value="paypal">PayPal</option>
+                        <option value="mastercard">MasterCard</option>
+                        <option value="visa">Visa</option>
+                        <option value="tienda">Pago en tienda</option>
+                    </select>
                 </div>
 
-                <div style="margin: 2rem 0;">
-                    <h4 style="margin-bottom: 1rem; color: var(--text-dark);">Opciones de Accesibilidad</h4>
-                    <div style="display: flex; gap: 1rem;">
-                        <button style="background-color: transparent; border: 2px solid var(--text-blue); color: var(--text-blue); padding: 0.75rem 1.5rem; font-size: 1rem; cursor: pointer; transition: 0.3s; border-radius: 30px;" onclick="changeFontSize(1)">Aumentar Texto (A+)</button>
-                        <button style="background-color: transparent; border: 2px solid var(--text-blue); color: var(--text-blue); padding: 0.75rem 1.5rem; font-size: 1rem; cursor: pointer; transition: 0.3s; border-radius: 30px;" onclick="changeFontSize(-1)">Reducir Texto (A-)</button>
+                <button class="btn-full" onclick="cerrarTicket()">
+                    Confirmar y Pagar
+                </button>
+            </div>
+        </div>
+
+        <main>
+            <div id="view-home">
+                <div class="carousel">
+                    <button
+                        class="car-btn"
+                        style="left: 1rem"
+                        onclick="moveCarousel(-1)"
+                    >
+                        ❮
+                    </button>
+                    <div class="slide active">
+                        <h2>¡Bienvenido a Walmart!</h2>
+                        <p>Encuentra todo lo que necesitas.</p>
+                    </div>
+                    <div class="slide">
+                        <h2 style="color: var(--accent-yellow)">
+                            Promoción Especial
+                        </h2>
+                        <p>Hasta 50% de descuento en Electrónica.</p>
+                    </div>
+                    <div class="slide">
+                        <h2 style="color: #66ff66">Súper Días</h2>
+                        <p>Ahorra en tu despensa semanal.</p>
+                    </div>
+                    <button
+                        class="car-btn"
+                        style="right: 1rem"
+                        onclick="moveCarousel(1)"
+                    >
+                        ❯
+                    </button>
+                </div>
+
+                <div class="cat-grid" id="quickCategories"></div>
+
+                <hr class="section-divider" />
+
+                <div id="sections-container"></div>
+            </div>
+
+            <div id="view-category" class="hidden">
+                <div class="view-header">
+                    <button class="btn-back" onclick="navigate('home')">
+                        ← Volver
+                    </button>
+                    <h2 id="category-title">Categoría</h2>
+                </div>
+                <div class="product-grid" id="category-grid"></div>
+            </div>
+
+            <div id="view-account" class="hidden">
+                <div class="view-header"><h2>Mi Cuenta</h2></div>
+                <div
+                    class="list-container"
+                    style="max-width: 600px; margin: 0 auto"
+                >
+                    <div
+                        style="
+                            display: flex;
+                            align-items: center;
+                            gap: 1rem;
+                            margin-bottom: 2rem;
+                        "
+                    >
+                        <div
+                            class="icon-placeholder"
+                            style="
+                                width: 80px;
+                                height: 80px;
+                                border-radius: 50%;
+                                background-color: var(--primary-blue);
+                            "
+                        ></div>
+                        <div>
+                            <h3>Información del Cliente</h3>
+                            <p style="color: var(--text-light)">
+                                Inicia sesión para ver tus datos
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label
+                            >Notas o información adicional del cliente:</label
+                        >
+                        <textarea
+                            rows="3"
+                            placeholder="Escribe aquí..."
+                        ></textarea>
+                    </div>
+
+                    <div style="margin: 2rem 0">
+                        <h4
+                            style="margin-bottom: 1rem; color: var(--text-dark)"
+                        >
+                            Opciones de Accesibilidad
+                        </h4>
+                        <div style="display: flex; gap: 1rem">
+                            <button
+                                style="
+                                    background-color: transparent;
+                                    border: 2px solid var(--text-blue);
+                                    color: var(--text-blue);
+                                    padding: 0.75rem 1.5rem;
+                                    font-size: 1rem;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+                                    border-radius: 30px;
+                                "
+                                onclick="changeFontSize(1)"
+                            >
+                                Aumentar Texto (A+)
+                            </button>
+                            <button
+                                style="
+                                    background-color: transparent;
+                                    border: 2px solid var(--text-blue);
+                                    color: var(--text-blue);
+                                    padding: 0.75rem 1.5rem;
+                                    font-size: 1rem;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+                                    border-radius: 30px;
+                                "
+                                onclick="changeFontSize(-1)"
+                            >
+                                Reducir Texto (A-)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; align-items: stretch">
+                        <button
+                            class="btn-primary"
+                            style="
+                                border-radius: 30px;
+                                padding: 1rem;
+                                font-size: 1.1rem;
+                                flex: 1;
+                                cursor: pointer;
+                                transition: 0.3s;
+                            "
+                            onclick="openModal('loginModal')"
+                        >
+                            Iniciar Sesión
+                        </button>
+                        <button
+                            class="btn-primary"
+                            style="
+                                border-radius: 30px;
+                                padding: 1rem;
+                                font-size: 1.1rem;
+                                flex: 1;
+                                cursor: pointer;
+                                transition: 0.3s;
+                            "
+                            onclick="openModal('registerModal')"
+                        >
+                            Registrarse
+                        </button>
                     </div>
                 </div>
-
-                <div style="display: flex; gap: 1rem; align-items: stretch;">
-                    <button class="btn-primary" style="border-radius: 30px; padding: 1rem; font-size: 1.1rem; flex: 1; cursor: pointer; transition: 0.3s;" onclick="openModal('loginModal')">Iniciar Sesión</button>
-                    <button class="btn-primary" style="border-radius: 30px; padding: 1rem; font-size: 1.1rem; flex: 1; cursor: pointer; transition: 0.3s;" onclick="openModal('registerModal')">Registrarse</button>
-                </div>
             </div>
-        </div>
 
-        <div id="view-product" class="hidden">
-            <div class="view-header">
-                <button class="btn-back" onclick="navigate('home')">← Volver</button>
-            </div>
-            <div class="product-detail-layout">
-                <div class="detail-image" id="detail-img">
-                    <span>[Imagen Principal del Producto]</span>
+            <div id="view-product" class="hidden">
+                <div class="view-header">
+                    <button class="btn-back" onclick="navigate('home')">
+                        ← Volver
+                    </button>
                 </div>
-                <div class="detail-info">
-                    <h2 id="detail-title">Nombre del Producto</h2>
-                    <p class="price" id="detail-price">$0.00</p>
-                    <p style="margin-bottom: 2rem; color: var(--text-light);">Vendido y enviado por Walmart</p>
-                    <div class="detail-actions">
-                        <button class="btn-buy" style="border: 2px solid var(--text-blue); color: var(--text-blue);" onclick="comprarAhoraProdActual()">Comprar ahora</button>
-                        <button class="btn-primary" id="detail-add-cart">Agregar al carrito</button>
+                <div class="product-detail-layout">
+                    <div class="detail-image" id="detail-img">
+                        <span>[Imagen Principal del Producto]</span>
+                    </div>
+                    <div class="detail-info">
+                        <h2 id="detail-title">Nombre del Producto</h2>
+                        <p class="price" id="detail-price">$0.00</p>
+                        <p
+                            style="
+                                margin-bottom: 2rem;
+                                color: var(--text-light);
+                            "
+                        >
+                            Vendido y enviado por Walmart
+                        </p>
+                        <div class="detail-actions">
+                            <button
+                                class="btn-buy"
+                                style="
+                                    border: 2px solid var(--text-blue);
+                                    color: var(--text-blue);
+                                "
+                                onclick="comprarAhoraProdActual()"
+                            >
+                                Comprar ahora
+                            </button>
+                            <button class="btn-primary" id="detail-add-cart">
+                                Agregar al carrito
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="view-faq" class="hidden">
-            <div class="view-header">
-                <button class="btn-back" onclick="navigate('home')">← Volver</button>
-                <h2>Centro de Ayuda y Documentación</h2>
-            </div>
-            <div class="list-container">
-                <div class="list-item"><strong>¿Cómo rastreo mi pedido?</strong><br>Ve a tu cuenta > Mis pedidos.</div>
-                <div class="list-item"><strong>Métodos de pago</strong><br>Tarjetas, PayPal y pago en tienda.</div>
-            </div>
-        </div>
-
-        <div id="view-cart" class="hidden">
-            <div class="view-header">
-                <button class="btn-back" onclick="navigate('home')">← Seguir comprando</button>
-                <h2>Tu Carrito</h2>
-            </div>
-            <div class="list-container">
-                <div id="cart-list">
-                    <p>Tu carrito está vacío.</p>
+            <div id="view-faq" class="hidden">
+                <div class="view-header">
+                    <button class="btn-back" onclick="navigate('home')">
+                        ← Volver
+                    </button>
+                    <h2>Centro de Ayuda y Documentación</h2>
                 </div>
-                <div id="cart-footer" style="display: none; margin-top: 2rem; border-top: 2px solid var(--bg-light); padding-top: 1.5rem;">
-                    <h3 id="cart-total" style="text-align: right; margin-bottom: 1.5rem; color: var(--text-dark); font-size: 1.5rem;">Total: $0.00</h3>
-                    <div style="display: flex; justify-content: flex-end;">
-                        <button class="btn-primary" style="border-radius: 30px; padding: 1rem 3rem; font-size: 1.2rem; font-weight: bold; cursor: pointer; transition: 0.3s;" onclick="abrirCheckout()">Pagar</button>
+                <div class="list-container">
+                    <div class="list-item">
+                        <strong>¿Cómo rastreo mi pedido?</strong><br />Ve a tu
+                        cuenta > Mis pedidos.
+                    </div>
+                    <div class="list-item">
+                        <strong>Métodos de pago</strong><br />Tarjetas, PayPal y
+                        pago en tienda.
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="view-favorites" class="hidden">
-            <div class="view-header">
-                <button class="btn-back" onclick="navigate('home')">← Volver</button>
-                <h2>Tus Favoritos</h2>
+            <div id="view-cart" class="hidden">
+                <div class="view-header">
+                    <button class="btn-back" onclick="navigate('home')">
+                        ← Seguir comprando
+                    </button>
+                    <h2>Tu Carrito</h2>
+                </div>
+                <div class="list-container">
+                    <div id="cart-list">
+                        <p>Tu carrito está vacío.</p>
+                    </div>
+                    <div
+                        id="cart-footer"
+                        style="
+                            display: none;
+                            margin-top: 2rem;
+                            border-top: 2px solid var(--bg-light);
+                            padding-top: 1.5rem;
+                        "
+                    >
+                        <h3
+                            id="cart-total"
+                            style="
+                                text-align: right;
+                                margin-bottom: 1.5rem;
+                                color: var(--text-dark);
+                                font-size: 1.5rem;
+                            "
+                        >
+                            Total: $0.00
+                        </h3>
+                        <div style="display: flex; justify-content: flex-end">
+                            <button
+                                class="btn-primary"
+                                style="
+                                    border-radius: 30px;
+                                    padding: 1rem 3rem;
+                                    font-size: 1.2rem;
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                    transition: 0.3s;
+                                "
+                                onclick="abrirCheckout()"
+                            >
+                                Pagar
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="list-container" id="fav-list">
-                <p>No tienes artículos en favoritos.</p>
-            </div>
-        </div>
-    </main>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Atención al Cliente</h4>
-                <p onclick="navigate('faq', 'Centro de Ayuda')">Centro de Ayuda</p>
-                <p>Términos y Condiciones</p>
+            <div id="view-favorites" class="hidden">
+                <div class="view-header">
+                    <button class="btn-back" onclick="navigate('home')">
+                        ← Volver
+                    </button>
+                    <h2>Tus Favoritos</h2>
+                </div>
+                <div class="list-container" id="fav-list">
+                    <p>No tienes artículos en favoritos.</p>
+                </div>
             </div>
-            <div class="footer-section">
-                <h4>Acerca de Walmart</h4>
-                <p>Nuestras Tiendas</p>
-                <p>Bolsa de Trabajo</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>© 2026 Walmart. Todos los derechos reservados. (Prototipo)</p>
-        </div>
-    </footer>
+        </main>
 
-    <script src="script.js"></script>
-</body>
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Atención al Cliente</h4>
+                    <p onclick="navigate('faq', 'Centro de Ayuda')">
+                        Centro de Ayuda
+                    </p>
+                    <p>Términos y Condiciones</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Acerca de Walmart</h4>
+                    <p>Nuestras Tiendas</p>
+                    <p>Bolsa de Trabajo</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>
+                    © 2026 Walmart. Todos los derechos reservados. (Prototipo)
+                </p>
+            </div>
+        </footer>
+
+        <script src="script.js"></script>
+    </body>
 </html>
