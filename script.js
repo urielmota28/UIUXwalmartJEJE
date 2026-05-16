@@ -73,11 +73,12 @@ let productoActual = null;
    ========================================= */
 function generarTarjeta(prod) {
   const safeName = prod.nombre.replace(/'/g, "\\'");
+  const isFav = favoritos.some((f) => f.id === prod.id);
 
   return `
         <article class="product-card">
-            <button class="btn-fav" onclick="toggleFav(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar a favoritos">
-                <span class="icon-placeholder" style="width: 20px; height: 20px; background: transparent;"></span>
+            <button class="btn-fav" onclick="toggleFav(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar a favoritos" style="background-color: ${isFav ? "var(--danger)" : "var(--accent-yellow)"}">
+                <i class="${isFav ? "fa-solid" : "fa-regular"} fa-heart" style="color: white; font-size: 1.2rem;"></i>
             </button>
 
             <button type="button" class="image-placeholder" onclick="openProduct(${prod.id}, '${safeName}', '${prod.precio}')">
@@ -86,11 +87,11 @@ function generarTarjeta(prod) {
 
             <div class="card-actions">
                 <button class="btn-buy-icon" onclick="comprarRapido(${prod.id}, '${safeName}', '${prod.precio}')" title="Comprar ahora">
-                    <span class="icon-placeholder" style="width: 24px; height: 24px; background: transparent;"></span>
+                    <i class="fa-solid fa-money-bill" style="color: var(--text-dark); font-size: 1.3rem;"></i>
                 </button>
 
                 <button class="btn-add-icon" onclick="addToCart(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar al carrito">
-                    <span class="icon-placeholder" style="width: 24px; height: 24px; background: transparent;"></span>
+                    <i class="fa-solid fa-cart-plus" style="color: var(--text-dark); font-size: 1.3rem;"></i>
                 </button>
             </div>
 
@@ -270,13 +271,16 @@ function comprarAhoraProdActual() {
 
 function toggleFav(id, nombre, precio, event) {
   const btn = event.currentTarget;
+  const icon = btn.querySelector("i");
   const index = favoritos.findIndex((f) => f.id === id);
   if (index === -1) {
     favoritos.push({ id, nombre, precio });
     btn.style.backgroundColor = "var(--danger)";
+    icon.classList.replace("fa-regular", "fa-solid");
   } else {
     favoritos.splice(index, 1);
     btn.style.backgroundColor = "var(--accent-yellow)";
+    icon.classList.replace("fa-solid", "fa-regular");
   }
 }
 
