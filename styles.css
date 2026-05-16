@@ -634,7 +634,11 @@ main {
     justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
-    transition: transform 0.1s;
+    transition: background-color 0.4s ease, transform 0.1s;
+}
+.btn-buy-icon.active,
+.btn-add-icon.active {
+    background-color: var(--primary-blue) !important;
 }
 .btn-buy-icon:hover,
 .btn-add-icon:hover {

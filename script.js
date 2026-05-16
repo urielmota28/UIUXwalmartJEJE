@@ -241,11 +241,22 @@ function addToCart(id, nombre, precio, event) {
 
   if (event && event.currentTarget) {
     const btn = event.currentTarget;
-    const originalBG = btn.style.backgroundColor;
-    btn.style.backgroundColor = "var(--primary-blue)";
-    setTimeout(() => {
-      btn.style.backgroundColor = originalBG;
+    
+    // Si ya tiene la clase active, la quitamos y volvemos a poner para reiniciar el timer visualmente si se desea,
+    // pero para evitar el bug de "se queda azul", simplemente la añadimos y manejamos el timeout limpiamente.
+    btn.classList.add("active");
+    
+    // Usamos un atributo personalizado para guardar el ID del timeout y poder cancelarlo si se clica de nuevo
+    if (btn.dataset.timeoutId) {
+      clearTimeout(parseInt(btn.dataset.timeoutId));
+    }
+
+    const timeoutId = setTimeout(() => {
+      btn.classList.remove("active");
+      delete btn.dataset.timeoutId;
     }, 2000);
+
+    btn.dataset.timeoutId = timeoutId;
   }
 }
 
