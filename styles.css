@@ -532,7 +532,7 @@ main {
     }
     /* Reducir tama帽o del logo en m贸vil */
     .logo-img {
-        height: 30px;
+        height: 20px;
     }
     .logo-container {
         padding: 0.5rem;
@@ -557,43 +557,6 @@ main {
     .sidebar .menu-item.active {
         background-color: var(--bg-light);
         color: var(--secondary-blue);
-    }
-
-    /* Optimizaci贸n de la vista de detalle de producto en m贸vil */
-    .product-detail-layout {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-        padding: 1rem;
-    }
-    .detail-image {
-        height: 300px;
-    }
-    .detail-info h2 {
-        font-size: 1.5rem;
-        margin-bottom: 0.5rem;
-    }
-    .detail-info .price {
-        font-size: 1.8rem;
-        margin-bottom: 1rem;
-    }
-    .detail-actions {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    .detail-actions button {
-        width: 100%;
-        padding: 0.8rem;
-    }
-
-    /* Ajustes generales de contenedores para m贸vil */
-    .list-container {
-        padding: 1rem;
-    }
-    .view-header {
-        margin-bottom: 1rem;
-    }
-    .view-header h2 {
-        font-size: 1.4rem;
     }
 }
 
@@ -823,3 +786,46 @@ footer {
     font-size: 0.8rem;
     color: #ccc;
 }
+
+/* =========================================
+   Mobile Specificity Overrides
+   ========================================= */
+@media (max-width: 768px) {
+    /* Optimizaci髇 de la vista de detalle de producto en m髒il */
+    .product-detail-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+    .detail-image {
+        height: 300px;
+    }
+    .detail-info h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .detail-info .price {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    .detail-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .detail-actions button {
+        width: 100%;
+        padding: 0.8rem;
+    }
+
+    /* Ajustes generales de contenedores para m髒il */
+    .list-container {
+        padding: 1rem;
+    }
+    .view-header {
+        margin-bottom: 1rem;
+    }
+    .view-header h2 {
+        font-size: 1.4rem;
+    }
+}
+
