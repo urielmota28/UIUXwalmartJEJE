@@ -514,28 +514,86 @@ main {
     }
     header {
         flex-wrap: wrap;
-        padding: 0.5rem 1rem;
+        padding: 0.75rem 1rem;
     }
     .header-top {
         gap: 0.5rem;
+        justify-content: flex-start;
     }
     .search-bar {
         order: 3;
         max-width: 100%;
-        margin-top: 0.5rem;
+        margin-top: 0.75rem;
     }
     /* Ocultar las acciones del header y el texto del logo en móvil */
-    .header-actions, 
+    .header-actions,
     .logo-container span {
         display: none !important;
+    }
+    /* Reducir tamaño del logo en móvil */
+    .logo-img {
+        height: 30px;
+    }
+    .logo-container {
+        padding: 0.5rem;
     }
     /* Mostrar elementos específicos de móvil en el sidebar */
     .mobile-only {
         display: flex !important;
     }
+    .sidebar .menu-item {
+        padding: 1rem;
+        margin-bottom: 0.25rem;
+        border-radius: var(--border-radius);
+        border-bottom: none;
+    }
     .sidebar .menu-item i {
-        width: 20px;
+        width: 24px;
+        font-size: 1.2rem;
         color: var(--primary-blue);
+        margin-right: 0.5rem;
+    }
+    .sidebar .menu-item:hover,
+    .sidebar .menu-item.active {
+        background-color: var(--bg-light);
+        color: var(--secondary-blue);
+    }
+
+    /* Optimización de la vista de detalle de producto en móvil */
+    .product-detail-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+    .detail-image {
+        height: 300px;
+    }
+    .detail-info h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .detail-info .price {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+    }
+    .detail-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .detail-actions button {
+        width: 100%;
+        padding: 0.8rem;
+    }
+
+    /* Ajustes generales de contenedores para móvil */
+    .list-container {
+        padding: 1rem;
+    }
+    .view-header {
+        margin-bottom: 1rem;
+    }
+    .view-header h2 {
+        font-size: 1.4rem;
     }
 }
 
@@ -646,7 +704,11 @@ main {
     color: var(--text-title);
     margin-bottom: 0.5rem;
 }
-.product-desc { font-size: 0.85rem; color: var(--text-title); line-height: 1.4; }
+.product-desc {
+    font-size: 0.85rem;
+    color: var(--text-title);
+    line-height: 1.4;
+}
 
 /* =========================================
    Detail Views
