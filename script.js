@@ -77,7 +77,7 @@ function generarTarjeta(prod) {
 
   return `
         <article class="product-card">
-            <button class="btn-fav" onclick="toggleFav(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar a favoritos" style="background-color: ${isFav ? "var(--danger)" : "var(--accent-yellow)"}">
+            <button class="btn-fav" onclick="toggleFav(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar a favoritos" style="background-color: ${isFav ? "var(--primary-blue)" : "var(--accent-yellow)"}">
                 <i class="${isFav ? "fa-solid" : "fa-regular"} fa-heart" style="color: white; font-size: 1.2rem;"></i>
             </button>
 
@@ -87,11 +87,11 @@ function generarTarjeta(prod) {
 
             <div class="card-actions">
                 <button class="btn-buy-icon" onclick="comprarRapido(${prod.id}, '${safeName}', '${prod.precio}')" title="Comprar ahora">
-                    <i class="fa-solid fa-money-bill" style="color: var(--text-dark); font-size: 1.3rem;"></i>
+                    <i class="fa-solid fa-money-bill" style="color: white; font-size: 1.3rem;"></i>
                 </button>
 
                 <button class="btn-add-icon" onclick="addToCart(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar al carrito">
-                    <i class="fa-solid fa-cart-plus" style="color: var(--text-dark); font-size: 1.3rem;"></i>
+                    <i class="fa-solid fa-cart-plus" style="color: white; font-size: 1.3rem;"></i>
                 </button>
             </div>
 
@@ -242,10 +242,10 @@ function addToCart(id, nombre, precio, event) {
   if (event && event.currentTarget) {
     const btn = event.currentTarget;
     const originalBG = btn.style.backgroundColor;
-    btn.style.backgroundColor = "var(--text-dark)";
+    btn.style.backgroundColor = "var(--primary-blue)";
     setTimeout(() => {
       btn.style.backgroundColor = originalBG;
-    }, 400);
+    }, 2000);
   }
 }
 
@@ -275,7 +275,7 @@ function toggleFav(id, nombre, precio, event) {
   const index = favoritos.findIndex((f) => f.id === id);
   if (index === -1) {
     favoritos.push({ id, nombre, precio });
-    btn.style.backgroundColor = "var(--danger)";
+    btn.style.backgroundColor = "var(--primary-blue)";
     icon.classList.replace("fa-regular", "fa-solid");
   } else {
     favoritos.splice(index, 1);
