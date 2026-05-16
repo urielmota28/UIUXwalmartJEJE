@@ -628,6 +628,20 @@ main {
     flex-grow: 1;
 }
 
+.btn-buy {
+    background: transparent;
+    border: 2px solid var(--text-blue);
+    color: var(--text-blue);
+    font-weight: bold;
+    flex-grow: 1;
+}
+.btn-buy:hover {
+    background-color: rgba(0, 113, 206, 0.1);
+}
+body.dark-mode .btn-buy:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 .list-container {
     background: var(--white);
     border-radius: var(--border-radius);
