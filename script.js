@@ -157,18 +157,45 @@ function abrirCheckout() {
 function finalizarCompra() {
   const method = $("paymentMethod").value;
   const address = $("checkoutNewAddress").value || ubicacionUsuario;
+  let errores = [];
 
-  if (!address) {
-    alert("Por favor, ingresa una dirección de envío.");
-    return;
+  // 1. Validación de Dirección
+  if (!address.trim()) {
+    errores.push("- Debes ingresar una dirección de envío.");
   }
 
+  // 2. Validación de Métodos de Pago (Tarjeta/PayPal)
   if (method !== "tienda") {
-    const card = $("cardNumber").value;
-    if (card.length < 16) {
-      alert("Por favor, ingresa los datos de pago.");
-      return;
+    const card = $("cardNumber").value.trim();
+    const expiry = $("cardExpiry").value.trim();
+    const cvv = $("cardCVV").value.trim();
+
+    // Validación específica del Número de Tarjeta
+    if (!card) {
+      errores.push("- El número de tarjeta es obligatorio.");
+    } else if (card.length < 15 || card.length > 16) {
+      errores.push("- El número de tarjeta debe tener 15 o 16 dígitos.");
     }
+
+    // Validación específica de la Expiración
+    if (!expiry) {
+      errores.push("- La fecha de expiración es obligatoria.");
+    } else if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+      errores.push("- El formato de expiración debe ser MM/AA (ej: 12/26).");
+    }
+
+    // Validación específica del CVV
+    if (!cvv) {
+      errores.push("- El código CVV es obligatorio.");
+    } else if (cvv.length !== 3) {
+      errores.push("- El CVV debe tener exactamente 3 dígitos.");
+    }
+  }
+
+  // Si hay errores, mostrarlos todos juntos
+  if (errores.length > 0) {
+    alert("Por favor corrige los siguientes errores:\n\n" + errores.join("\n"));
+    return;
   }
 
   alert("¡Compra realizada con éxito! Gracias por elegir Walmart.");
