@@ -177,6 +177,91 @@ function setupCategoriasRapidas() {
 }
 
 /* =========================================
+   Búsqueda & Sugerencias
+   ========================================= */
+function setupSearch() {
+  const input = $("searchInput");
+  const suggestions = $("searchSuggestions");
+  const btn = $("searchBtn");
+
+  input.addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    if (query.length < 2) {
+      suggestions.classList.add("hidden");
+      return;
+    }
+
+    // Filtrar productos de todas las categorías
+    const allProducts = categorias.flatMap((c) =>
+      c.productos.map((p) => ({ ...p, cat: c.titulo })),
+    );
+    const matches = allProducts
+      .filter((p) => p.nombre.toLowerCase().includes(query))
+      .slice(0, 6); // Limitar a 6 sugerencias
+
+    if (matches.length > 0) {
+      suggestions.innerHTML = matches
+        .map(
+          (m) => `
+        <div class="suggestion-item" onclick="openProduct(${m.id}, '${m.nombre.replace(/'/g, "\\'")}', '${m.precio}'); $('searchSuggestions').classList.add('hidden');">
+          <span class="prod-name">${m.nombre}</span>
+          <span class="prod-cat">${m.cat}</span>
+        </div>
+      `,
+        )
+        .join("");
+      suggestions.classList.remove("hidden");
+    } else {
+      suggestions.classList.add("hidden");
+    }
+  });
+
+  // Cerrar sugerencias al hacer clic fuera
+  document.addEventListener("click", (e) => {
+    if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+      suggestions.classList.add("hidden");
+    }
+  });
+
+  btn.addEventListener("click", () => {
+    const query = input.value.trim();
+    if (query) {
+      abrirResultadosBusqueda(query);
+      suggestions.classList.add("hidden");
+    }
+  });
+
+  // Búsqueda al presionar Enter
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      btn.click();
+    }
+  });
+}
+
+function abrirResultadosBusqueda(query) {
+  $("category-title").textContent = `Resultados para: "${query}"`;
+  const allProducts = categorias.flatMap((c) => c.productos);
+  const matches = allProducts.filter((p) =>
+    p.nombre.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  if (matches.length > 0) {
+    $("category-grid").innerHTML = matches
+      .map((p) => generarTarjeta(p))
+      .join("");
+  } else {
+    $("category-grid").innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+            <p style="font-size: 1.2rem; color: var(--text-dark);">No encontramos resultados para "${query}"</p>
+            <button class="btn-primary" style="margin-top: 1rem; padding: 0.5rem 2rem;" onclick="navigate('home')">Ver todos los productos</button>
+        </div>`;
+  }
+  navigate("category", "Búsqueda");
+}
+
+/* =========================================
    Navegación & Vistas
    ========================================= */
 function navigate(viewId, viewName = "") {
@@ -355,6 +440,95 @@ function abrirCheckout() {
     '<ul style="list-style: none; padding: 0; margin: 0; font-size: 0.95rem;">';
 
   // Llenar la lista del ticket dinámicamente
+  carrito.forEach((item) => {
+    total += parsePrice(item.precio);
+    resumenHTML += `
+            <li style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px dashed var(--text-light); padding-bottom: 0.5rem;">
+                <span style="flex: 1; padding-right: 1rem;">${item.nombre}</span>
+                <strong>${item.precio}</strong>
+            </li>`;
+  });
+  resumenHTML += "</ul>";
+  resumenHTML += `
+        <div style="text-align: right; font-size: 1.3rem; color: var(--text-blue); margin-top: 1rem;">
+            <strong>Total: ${formatPrice(total)}</strong>
+        </div>`;
+
+  $("checkoutSummary").innerHTML = resumenHTML;
+  openModal("checkoutModal");
+}
+
+function cerrarTicket() {
+  // El flujo dicta que al cerrar la ventana modal de pago se elimina todo del carrito
+  carrito = [];
+  $("cartCount").textContent = `Carrito (0)`;
+  renderCart();
+  $("checkoutModal").classList.remove("active");
+  navigate("home");
+}
+
+function renderFavs() {
+  const container = $("fav-list");
+  container.innerHTML =
+    favoritos.length === 0
+      ? "<p>No tienes artículos en favoritos.</p>"
+      : favoritos
+          .map(
+            (item) =>
+              `<div class="list-item"><span>${item.nombre}</span><button class="btn-buy" style="padding: 0.5rem 1rem; border: 2px solid var(--text-blue); color: var(--text-blue); border-radius: 20px;" onclick="openProduct(${item.id}, '${item.nombre.replace(/'/g, "\\'")}', '${item.precio}')">Ver</button></div>`,
+          )
+          .join("");
+}
+
+/* =========================================
+   UI Extras
+   ========================================= */
+function setupSidebar() {
+  const toggleMenu = () => {
+    $("sidebar").classList.toggle("active");
+    $("sidebarOverlay").classList.toggle("active");
+  };
+  $("menuBtn").addEventListener("click", toggleMenu);
+  $("closeSidebar").addEventListener("click", toggleMenu);
+  $("sidebarOverlay").addEventListener("click", toggleMenu);
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark-mode");
+}
+
+let fontSz = 16;
+function changeFontSize(step) {
+  fontSz = Math.max(12, Math.min(24, fontSz + step * 2));
+  document.documentElement.style.fontSize = fontSz + "px";
+}
+
+function openModal(id) {
+  $(id).classList.add("active");
+}
+function closeModals() {
+  $("loginModal").classList.remove("active");
+  $("registerModal").classList.remove("active");
+  $("checkoutModal").classList.remove("active");
+  $("locationModal").classList.remove("active");
+}
+
+let curSlide = 0;
+let slideTimer;
+function iniciarCarrusel() {
+  slideTimer = setInterval(() => moveCarousel(1), 10000);
+}
+function moveCarousel(step) {
+  const slides = document.querySelectorAll(".slide");
+  slides[curSlide].classList.remove("active");
+  curSlide = (curSlide + step + slides.length) % slides.length;
+  slides[curSlide].classList.add("active");
+  clearInterval(slideTimer);
+  iniciarCarrusel();
+}
+
+document.addEventListener("DOMContentLoaded", initApp);
+micamente
   carrito.forEach((item) => {
     total += parsePrice(item.precio);
     resumenHTML += `

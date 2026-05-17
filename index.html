@@ -49,11 +49,15 @@
                     <label for="searchInput" class="sr-only"
                         >Buscar productos</label
                     >
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="¿Qué estás buscando?"
-                    />
+                    <div style="position: relative; flex-grow: 1; display: flex;">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="¿Qué estás buscando?"
+                            autocomplete="off"
+                        />
+                        <div id="searchSuggestions" class="search-suggestions hidden"></div>
+                    </div>
                     <button id="searchBtn">Buscar</button>
                 </div>
 
@@ -239,51 +243,83 @@
             </div>
         </div>
 
-        <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-overlay" id="locationModal">
             <div class="modal-box">
-                <button class="close-modal" onclick="cerrarTicket()">✖</button>
-                <h2 style="margin-bottom: 1.5rem; color: var(--text-title)">
+                <button class="close-modal" onclick="closeModals()">✖</button>
+                <h2 style="margin-bottom: 1.5rem">Ubicación de entrega</h2>
+                <div class="input-group">
+                    <label for="inputLocation">Dirección Completa</label>
+                    <input type="text" id="inputLocation" placeholder="Calle, Número, Ciudad..." />
+                </div>
+                <button class="btn-full" onclick="saveLocation()">Guardar Ubicación</button>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="checkoutModal">
+            <div class="modal-box" style="max-width: 500px;">
+                <button class="close-modal" onclick="closeModals()">✖</button>
+                <h2 style="margin-bottom: 1rem; color: var(--text-title)">
                     Ticket de compra
                 </h2>
 
-                <div
-                    id="checkoutSummary"
-                    style="
-                        margin-bottom: 1.5rem;
-                        color: var(--text-dark);
-                        max-height: 150px;
-                        overflow-y: auto;
-                        background: var(--bg-light);
-                        padding: 1rem;
-                        border-radius: var(--border-radius);
-                    "
-                ></div>
+                <div id="checkoutSummary" style="
+                    margin-bottom: 1rem;
+                    color: var(--text-dark);
+                    max-height: 120px;
+                    overflow-y: auto;
+                    background: var(--bg-light);
+                    padding: 1rem;
+                    border-radius: var(--border-radius);
+                "></div>
+
+                <!-- Sección de Dirección en Checkout -->
+                <div id="checkoutAddressSection" style="margin-bottom: 1.5rem;">
+                    <h4 style="margin-bottom: 0.5rem;">Dirección de envío</h4>
+                    <div id="savedAddressDisplay" class="hidden" style="background: #eef; padding: 0.8rem; border-radius: 8px; margin-bottom: 0.5rem;">
+                        <p id="displayShippingAddress" style="font-size: 0.9rem;"></p>
+                        <button onclick="toggleNewAddress(true)" style="font-size: 0.8rem; color: var(--primary-blue); background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline;">Usar otra dirección</button>
+                    </div>
+                    <div id="newAddressForm" class="input-group">
+                        <input type="text" id="checkoutNewAddress" placeholder="Ingresa dirección de envío" />
+                    </div>
+                </div>
 
                 <div class="input-group">
-                    <label style="font-weight: bold; color: var(--text-dark)"
-                        >Método de pago</label
-                    >
-                    <select
-                        id="paymentMethod"
-                        style="
-                            padding: 0.8rem;
-                            border: 1px solid var(--text-light);
-                            border-radius: var(--border-radius);
-                            background: var(--white);
-                            color: var(--text-dark);
-                            font-family: inherit;
-                            font-size: 1rem;
-                            width: 100%;
-                        "
-                    >
+                    <label style="font-weight: bold; color: var(--text-dark)">Método de pago</label>
+                    <select id="paymentMethod" onchange="togglePaymentFields()" style="
+                        padding: 0.8rem;
+                        border: 1px solid var(--text-light);
+                        border-radius: var(--border-radius);
+                        background: var(--white);
+                        color: var(--text-dark);
+                        font-family: inherit;
+                        font-size: 1rem;
+                        width: 100%;
+                    ">
+                        <option value="visa">Visa / MasterCard</option>
                         <option value="paypal">PayPal</option>
-                        <option value="mastercard">MasterCard</option>
-                        <option value="visa">Visa</option>
                         <option value="tienda">Pago en tienda</option>
                     </select>
                 </div>
 
-                <button class="btn-full" onclick="cerrarTicket()">
+                <!-- Campos de Tarjeta / PayPal -->
+                <div id="cardFields" class="input-group">
+                    <input type="text" id="cardNumber" placeholder="Número de tarjeta" maxlength="16" />
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="cardExpiry" placeholder="MM/AA" style="flex: 2;" maxlength="5" />
+                        <input type="text" id="cardCVV" placeholder="CVV" style="flex: 1;" maxlength="3" />
+                    </div>
+                </div>
+
+                <!-- Campo para Pago en Tienda (QR) -->
+                <div id="tiendaFields" class="hidden" style="text-align: center; padding: 1rem; border: 2px dashed #ccc; border-radius: 8px;">
+                    <p style="font-size: 0.9rem; margin-bottom: 0.5rem;">Escanea este código en caja:</p>
+                    <div id="qrPlaceholder" style="width: 150px; height: 150px; background: #eee; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                        <span style="font-size: 0.8rem; color: #666;">[Imagen QR próximamente]</span>
+                    </div>
+                </div>
+
+                <button class="btn-full" onclick="finalizarCompra()">
                     Confirmar y Pagar
                 </button>
             </div>
