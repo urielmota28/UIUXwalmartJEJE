@@ -514,13 +514,30 @@
                         <p class="price" id="detail-price">$0.00</p>
                         <p
                             style="
-                                margin-bottom: 2rem;
+                                margin-bottom: 1rem;
                                 color: var(--text-light);
                             "
                         >
                             Vendido y enviado por Walmart
                         </p>
+                        <p id="detail-description" style="line-height: 1.6; margin-bottom: 2rem; color: var(--text-dark);">
+                            Cargando descripción...
+                        </p>
                         <div class="detail-actions">
+                            <button
+                                id="detail-fav-btn"
+                                class="btn-buy"
+                                style="
+                                    border: 2px solid var(--accent-yellow);
+                                    color: var(--accent-yellow);
+                                    flex-grow: 0;
+                                    width: 60px;
+                                "
+                                onclick="toggleFavProdActual(event)"
+                                aria-label="Agregar a favoritos"
+                            >
+                                <i class="fa-regular fa-heart" style="font-size: 1.5rem;"></i>
+                            </button>
                             <button
                                 class="btn-buy"
                                 style="
@@ -538,6 +555,13 @@
                             </button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Sección de Productos Relacionados -->
+                <div class="related-section" style="margin-top: 4rem;">
+                    <hr class="section-divider">
+                    <h3 class="section-title">Productos relacionados</h3>
+                    <div class="product-grid" id="related-grid"></div>
                 </div>
             </div>
 

@@ -513,22 +513,65 @@ function navigate(viewId, viewName = "", categoryName = "") {
 }
 
 function openProduct(id, nombre, precio) {
-  // Encontrar la categoría real del producto para las migas de pan
-  let categoryName = "";
+  let currentCategory = null;
+  let productData = null;
+
+  // Encontrar la categoría real del producto para las migas de pan y datos extras
   categorias.forEach(cat => {
-    if (cat.productos.some(p => p.id === id)) {
-      categoryName = cat.titulo;
+    const found = cat.productos.find(p => p.id === id);
+    if (found) {
+      productData = found;
+      currentCategory = cat;
     }
   });
 
+  const categoryName = currentCategory ? currentCategory.titulo : "";
   productoActual = { id, nombre, precio, categoryName };
+  
   const title = $("detail-title");
   const price = $("detail-price");
   const img = $("detail-img");
+  const desc = $("detail-description");
+  const relatedGrid = $("related-grid");
+  const favBtn = $("detail-fav-btn");
   
   if (title) title.textContent = nombre;
   if (price) price.textContent = precio;
   if (img) img.innerHTML = `<span>[Imagen Grande Prod ${id}]</span>`;
+  
+  // Actualizar estado del botón de favoritos
+  if (favBtn) {
+    const isFav = favoritos.some(f => f.id === id);
+    const icon = favBtn.querySelector("i");
+    if (isFav) {
+      favBtn.style.backgroundColor = "var(--primary-blue)";
+      favBtn.style.color = "white";
+      favBtn.style.borderColor = "var(--primary-blue)";
+      icon.classList.replace("fa-regular", "fa-solid");
+    } else {
+      favBtn.style.backgroundColor = "transparent";
+      favBtn.style.color = "var(--accent-yellow)";
+      favBtn.style.borderColor = "var(--accent-yellow)";
+      icon.classList.replace("fa-solid", "fa-regular");
+    }
+  }
+
+  // Texto de descripción simulado
+  if (desc) {
+    desc.textContent = productData?.descripcion || "Disfruta de la mejor calidad con este producto exclusivo de Walmart. Diseñado para ofrecer durabilidad, rendimiento y un estilo moderno que se adapta a tus necesidades diarias. Este artículo cuenta con garantía de satisfacción y ha sido seleccionado bajo los más altos estándares de calidad de nuestras marcas.";
+  }
+
+  // Generar 5 productos relacionados (reutilizando generarTarjeta)
+  if (relatedGrid) {
+    let allProds = categorias.flatMap(c => c.productos).filter(p => p.id !== id);
+    // Priorizar productos de la misma categoría si existen
+    let sameCat = currentCategory ? currentCategory.productos.filter(p => p.id !== id) : [];
+    let others = allProds.filter(p => !sameCat.find(sc => sc.id === p.id));
+    
+    let finalRelated = [...sameCat, ...others].slice(0, 5);
+    relatedGrid.innerHTML = finalRelated.map(p => generarTarjeta(p)).join("");
+  }
+
   navigate("product", nombre, categoryName);
 }
 
@@ -606,6 +649,32 @@ function comprarAhoraProdActual() {
       productoActual.nombre,
       productoActual.precio,
     );
+}
+
+function toggleFavProdActual(event) {
+  if (productoActual) {
+    toggleFav(
+      productoActual.id,
+      productoActual.nombre,
+      productoActual.precio,
+      event,
+    );
+    // Forzar actualización visual del botón de la página de detalle
+    const favBtn = $("detail-fav-btn");
+    const isFav = favoritos.some((f) => f.id === productoActual.id);
+    const icon = favBtn.querySelector("i");
+    if (isFav) {
+      favBtn.style.backgroundColor = "var(--primary-blue)";
+      favBtn.style.color = "white";
+      favBtn.style.borderColor = "var(--primary-blue)";
+      icon.classList.replace("fa-regular", "fa-solid");
+    } else {
+      favBtn.style.backgroundColor = "transparent";
+      favBtn.style.color = "var(--accent-yellow)";
+      favBtn.style.borderColor = "var(--accent-yellow)";
+      icon.classList.replace("fa-solid", "fa-regular");
+    }
+  }
 }
 
 function toggleFav(id, nombre, precio, event) {
