@@ -274,20 +274,64 @@ function initApp() {
   }
 }
 
+const videosTendencia = [
+  { id: 1, titulo: "MrBeast en Walmart", descripcion: "Go! x3" },
+  { id: 2, titulo: "Walmart USA Tour", descripcion: "¿Qué venden en Walmart USA?" },
+  { id: 3, titulo: "Mascota Bodega Aurrera", descripcion: "Súper Días de Ahorro" }
+];
+
+function renderVideoSection() {
+  return `
+    <section class="video-section">
+      <h2 class="section-title">Tendencia</h2>
+      <div class="video-grid">
+        ${videosTendencia.map(v => `
+          <button class="video-card" onclick="alert('Reproduciendo: ${v.titulo}')" aria-label="Reproducir video: ${v.titulo}">
+            <div class="video-play-icon"><i class="fa-solid fa-play"></i></div>
+            <div class="video-overlay">
+              <h4>${v.titulo}</h4>
+              <p style="font-size: 0.8rem; opacity: 0.9;">${v.descripcion}</p>
+            </div>
+          </button>
+        `).join("")}
+      </div>
+    </section>
+  `;
+}
+
 function renderSections() {
   const container = $("sections-container");
   if (!container) return;
-  container.innerHTML = categorias
-    .map(
-      (cat, index) => `
+  
+  // Mapeo de títulos de base de datos a títulos de marketing para la Home
+  const titulosMarketing = {
+    "Electrónica y Gaming": "Descuentazos",
+    "Hogar y Electrodomésticos": "Te puede interesar",
+    "Despensa Básica": "Supermercado"
+  };
+
+  let html = "";
+  categorias.forEach((cat, index) => {
+    const tituloDisplay = titulosMarketing[cat.titulo] || cat.titulo;
+    
+    html += `
         <section>
-            <h2 class="section-title">${cat.titulo}</h2>
+            <h2 class="section-title">${tituloDisplay}</h2>
             <div class="product-grid">${cat.productos.map((p) => generarTarjeta(p)).join("")}</div>
         </section>
-        ${index < categorias.length - 1 ? '<hr class="section-divider">' : ""}
-    `,
-    )
-    .join("");
+    `;
+
+    // Inyectar sección de videos después de la primera categoría (Descuentazos)
+    if (index === 0) {
+      html += '<hr class="section-divider">';
+      html += renderVideoSection();
+      html += '<hr class="section-divider">';
+    } else if (index < categorias.length - 1) {
+      html += '<hr class="section-divider">';
+    }
+  });
+  
+  container.innerHTML = html;
 }
 
 function setupCategoriasRapidas() {
