@@ -80,6 +80,105 @@ const categorias = [
 let carrito = [];
 let favoritos = [];
 let productoActual = null;
+let ubicacionUsuario = ""; // Variable global para la ubicación
+
+/* =========================================
+   Gestión de Ubicación
+   ========================================= */
+function saveLocation() {
+  const input = $("inputLocation").value.trim();
+  if (input) {
+    ubicacionUsuario = input;
+    $("locationText").textContent = `📍 ${ubicacionUsuario}`;
+    closeModals();
+    announce(`Ubicación actualizada a: ${ubicacionUsuario}`);
+  }
+}
+
+/* =========================================
+   Interacciones de Checkout Mejoradas
+   ========================================= */
+function togglePaymentFields() {
+  const method = $("paymentMethod").value;
+  const cardFields = $("cardFields");
+  const tiendaFields = $("tiendaFields");
+
+  if (method === "tienda") {
+    cardFields.classList.add("hidden");
+    tiendaFields.classList.remove("hidden");
+  } else {
+    cardFields.classList.remove("hidden");
+    tiendaFields.classList.add("hidden");
+  }
+}
+
+function toggleNewAddress(forceShowForm = false) {
+  const display = $("savedAddressDisplay");
+  const form = $("newAddressForm");
+
+  if (ubicacionUsuario && !forceShowForm) {
+    display.classList.remove("hidden");
+    form.classList.add("hidden");
+    $("displayShippingAddress").textContent = ubicacionUsuario;
+  } else {
+    display.classList.add("hidden");
+    form.classList.remove("hidden");
+  }
+}
+
+function abrirCheckout() {
+  let total = 0;
+  let resumenHTML = '<ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">';
+
+  carrito.forEach((item) => {
+    total += parsePrice(item.precio);
+    resumenHTML += `
+            <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px dashed var(--text-light); padding-bottom: 0.3rem;">
+                <span style="flex: 1; padding-right: 1rem;">${item.nombre}</span>
+                <strong>${item.precio}</strong>
+            </li>`;
+  });
+  resumenHTML += "</ul>";
+  resumenHTML += `<div style="text-align: right; font-size: 1.1rem; color: var(--text-blue); margin-top: 0.5rem;"><strong>Total: ${formatPrice(total)}</strong></div>`;
+
+  $("checkoutSummary").innerHTML = resumenHTML;
+  
+  // Configurar sección de dirección
+  toggleNewAddress();
+  
+  // Resetear campos de pago
+  $("paymentMethod").value = "visa";
+  togglePaymentFields();
+  
+  openModal("checkoutModal");
+}
+
+function finalizarCompra() {
+  const method = $("paymentMethod").value;
+  const address = $("checkoutNewAddress").value || ubicacionUsuario;
+
+  if (!address) {
+    alert("Por favor, ingresa una dirección de envío.");
+    return;
+  }
+
+  if (method !== "tienda") {
+    const card = $("cardNumber").value;
+    if (card.length < 16) {
+      alert("Por favor, ingresa los datos de pago.");
+      return;
+    }
+  }
+
+  alert("¡Compra realizada con éxito! Gracias por elegir Walmart.");
+  
+  // Limpiar carrito y cerrar
+  carrito = [];
+  $("cartCount").textContent = `Carrito (0)`;
+  renderCart();
+  closeModals();
+  navigate("home");
+}
 
 /* =========================================
    Generador de Tarjetas Reutilizable
@@ -126,6 +225,7 @@ function initApp() {
   setupSidebar();
   setupCategoriasRapidas();
   iniciarCarrusel();
+  setupSearch();
 
   $("detail-add-cart").onclick = function (e) {
     if (productoActual)
@@ -274,10 +374,13 @@ function navigate(viewId, viewName = "") {
     "faq",
     "category",
   ].forEach((id) => {
-    $(`view-${id}`).classList.add("hidden");
+    const el = $(`view-${id}`);
+    if (el) el.classList.add("hidden");
   });
 
-  $(`view-${viewId}`).classList.remove("hidden");
+  const targetView = $(`view-${viewId}`);
+  if (targetView) targetView.classList.remove("hidden");
+  
   window.scrollTo(0, 0);
 
   // Cerrar sidebar automáticamente en móvil tras navegar
@@ -289,7 +392,6 @@ function navigate(viewId, viewName = "") {
   // Resaltar ítem activo en el menú (Mejora predictiva)
   document.querySelectorAll(".sidebar .menu-item").forEach((item) => {
     item.classList.remove("active");
-    // Si el texto del item coincide o contiene la vista, marcar como activo
     if (
       item.innerText.toLowerCase().includes(viewId.toLowerCase()) ||
       (viewId === "home" && item.innerText.toLowerCase().includes("inicio"))
@@ -337,17 +439,12 @@ function addToCart(id, nombre, precio, event) {
   carrito.push({ id, nombre, precio });
   $("cartCount").textContent = `Carrito (${carrito.length})`;
 
-  // Anuncio para lectores de pantalla
   announce(`${nombre} ha sido agregado al carrito.`);
 
   if (event && event.currentTarget) {
     const btn = event.currentTarget;
-    
-    // Si ya tiene la clase active, la quitamos y volvemos a poner para reiniciar el timer visualmente si se desea,
-    // pero para evitar el bug de "se queda azul", simplemente la añadimos y manejamos el timeout limpiamente.
     btn.classList.add("active");
     
-    // Usamos un atributo personalizado para guardar el ID del timeout y poder cancelarlo si se clica de nuevo
     if (btn.dataset.timeoutId) {
       clearTimeout(parseInt(btn.dataset.timeoutId));
     }
@@ -364,7 +461,7 @@ function addToCart(id, nombre, precio, event) {
 function removeFromCart(index) {
   carrito.splice(index, 1);
   $("cartCount").textContent = `Carrito (${carrito.length})`;
-  renderCart(); // Re-renderizar la vista para actualizar el total y la lista
+  renderCart();
 }
 
 function comprarRapido(id, nombre, precio) {
@@ -411,7 +508,7 @@ function renderCart() {
   let total = 0;
   container.innerHTML = carrito
     .map((item, index) => {
-      total += parsePrice(item.precio); // Sumar al total
+      total += parsePrice(item.precio);
       return `
             <div class="list-item">
                 <div style="display: flex; flex-direction: column; gap: 0.3rem;">
@@ -424,47 +521,10 @@ function renderCart() {
     })
     .join("");
 
-  // Mostrar el footer de pago y actualizar el texto del total
   if (footer) {
     footer.style.display = "block";
     $("cart-total").textContent = `Total: ${formatPrice(total)}`;
   }
-}
-
-/* =========================================
-   Flujo de Ticket y Modal Checkout
-   ========================================= */
-function abrirCheckout() {
-  let total = 0;
-  let resumenHTML =
-    '<ul style="list-style: none; padding: 0; margin: 0; font-size: 0.95rem;">';
-
-  // Llenar la lista del ticket dinámicamente
-  carrito.forEach((item) => {
-    total += parsePrice(item.precio);
-    resumenHTML += `
-            <li style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px dashed var(--text-light); padding-bottom: 0.5rem;">
-                <span style="flex: 1; padding-right: 1rem;">${item.nombre}</span>
-                <strong>${item.precio}</strong>
-            </li>`;
-  });
-  resumenHTML += "</ul>";
-  resumenHTML += `
-        <div style="text-align: right; font-size: 1.3rem; color: var(--text-blue); margin-top: 1rem;">
-            <strong>Total: ${formatPrice(total)}</strong>
-        </div>`;
-
-  $("checkoutSummary").innerHTML = resumenHTML;
-  openModal("checkoutModal");
-}
-
-function cerrarTicket() {
-  // El flujo dicta que al cerrar la ventana modal de pago se elimina todo del carrito
-  carrito = [];
-  $("cartCount").textContent = `Carrito (0)`;
-  renderCart();
-  $("checkoutModal").classList.remove("active");
-  navigate("home");
 }
 
 function renderFavs() {
@@ -506,6 +566,7 @@ function changeFontSize(step) {
 function openModal(id) {
   $(id).classList.add("active");
 }
+
 function closeModals() {
   $("loginModal").classList.remove("active");
   $("registerModal").classList.remove("active");
@@ -520,94 +581,7 @@ function iniciarCarrusel() {
 }
 function moveCarousel(step) {
   const slides = document.querySelectorAll(".slide");
-  slides[curSlide].classList.remove("active");
-  curSlide = (curSlide + step + slides.length) % slides.length;
-  slides[curSlide].classList.add("active");
-  clearInterval(slideTimer);
-  iniciarCarrusel();
-}
-
-document.addEventListener("DOMContentLoaded", initApp);
-micamente
-  carrito.forEach((item) => {
-    total += parsePrice(item.precio);
-    resumenHTML += `
-            <li style="display: flex; justify-content: space-between; margin-bottom: 0.8rem; border-bottom: 1px dashed var(--text-light); padding-bottom: 0.5rem;">
-                <span style="flex: 1; padding-right: 1rem;">${item.nombre}</span>
-                <strong>${item.precio}</strong>
-            </li>`;
-  });
-  resumenHTML += "</ul>";
-  resumenHTML += `
-        <div style="text-align: right; font-size: 1.3rem; color: var(--text-blue); margin-top: 1rem;">
-            <strong>Total: ${formatPrice(total)}</strong>
-        </div>`;
-
-  $("checkoutSummary").innerHTML = resumenHTML;
-  openModal("checkoutModal");
-}
-
-function cerrarTicket() {
-  // El flujo dicta que al cerrar la ventana modal de pago se elimina todo del carrito
-  carrito = [];
-  $("cartCount").textContent = `Carrito (0)`;
-  renderCart();
-  $("checkoutModal").classList.remove("active");
-  navigate("home");
-}
-
-function renderFavs() {
-  const container = $("fav-list");
-  container.innerHTML =
-    favoritos.length === 0
-      ? "<p>No tienes artículos en favoritos.</p>"
-      : favoritos
-          .map(
-            (item) =>
-              `<div class="list-item"><span>${item.nombre}</span><button class="btn-buy" style="padding: 0.5rem 1rem; border: 2px solid var(--text-blue); color: var(--text-blue); border-radius: 20px;" onclick="openProduct(${item.id}, '${item.nombre.replace(/'/g, "\\'")}', '${item.precio}')">Ver</button></div>`,
-          )
-          .join("");
-}
-
-/* =========================================
-   UI Extras
-   ========================================= */
-function setupSidebar() {
-  const toggleMenu = () => {
-    $("sidebar").classList.toggle("active");
-    $("sidebarOverlay").classList.toggle("active");
-  };
-  $("menuBtn").addEventListener("click", toggleMenu);
-  $("closeSidebar").addEventListener("click", toggleMenu);
-  $("sidebarOverlay").addEventListener("click", toggleMenu);
-}
-
-function toggleTheme() {
-  document.body.classList.toggle("dark-mode");
-}
-
-let fontSz = 16;
-function changeFontSize(step) {
-  fontSz = Math.max(12, Math.min(24, fontSz + step * 2));
-  document.documentElement.style.fontSize = fontSz + "px";
-}
-
-function openModal(id) {
-  $(id).classList.add("active");
-}
-function closeModals() {
-  $("loginModal").classList.remove("active");
-  $("registerModal").classList.remove("active");
-  $("checkoutModal").classList.remove("active");
-}
-
-let curSlide = 0;
-let slideTimer;
-function iniciarCarrusel() {
-  slideTimer = setInterval(() => moveCarousel(1), 10000);
-}
-function moveCarousel(step) {
-  const slides = document.querySelectorAll(".slide");
+  if (slides.length === 0) return;
   slides[curSlide].classList.remove("active");
   curSlide = (curSlide + step + slides.length) % slides.length;
   slides[curSlide].classList.add("active");
