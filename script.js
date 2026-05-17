@@ -12,6 +12,11 @@ const formatPrice = (num) =>
     maximumFractionDigits: 2,
   });
 
+// Función para eliminar acentos y diacríticos
+const removeAccents = (str) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};
+
 /* =========================================
    Accesibilidad: Anunciador ARIA
    ========================================= */
@@ -380,9 +385,10 @@ function abrirResultadosBusqueda(query) {
   if (!title || !grid) return;
 
   title.textContent = `Resultados para: "${query}"`;
+  const cleanQuery = removeAccents(query.toLowerCase());
   const allProducts = categorias.flatMap((c) => c.productos);
   const matches = allProducts.filter((p) =>
-    p.nombre.toLowerCase().includes(query.toLowerCase()),
+    removeAccents(p.nombre.toLowerCase()).includes(cleanQuery),
   );
 
   if (matches.length > 0) {
