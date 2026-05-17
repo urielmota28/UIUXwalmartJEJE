@@ -327,11 +327,13 @@ function setupSearch() {
       return;
     }
 
+    const cleanQuery = removeAccents(query);
+
     const allProducts = categorias.flatMap((c) =>
       c.productos.map((p) => ({ ...p, cat: c.titulo })),
     );
     const matches = allProducts
-      .filter((p) => p.nombre.toLowerCase().includes(query))
+      .filter((p) => removeAccents(p.nombre.toLowerCase()).includes(cleanQuery))
       .slice(0, 6);
 
     if (matches.length > 0) {
@@ -401,7 +403,7 @@ function abrirResultadosBusqueda(query) {
 /* =========================================
    Navegación & Vistas
    ========================================= */
-function navigate(viewId, viewName = "") {
+function navigate(viewId, viewName = "", categoryName = "") {
   [
     "home",
     "product",
@@ -439,18 +441,37 @@ function navigate(viewId, viewName = "") {
 
   const breadcrumb = $("breadcrumb-container");
   if (breadcrumb) {
-    if (viewId === "home")
-      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button>`;
-    else
-      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
+    if (viewId === "home") {
+      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button>`;
+    } else if (viewId === "product" && categoryName) {
+      breadcrumb.innerHTML = `
+        <button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button> > 
+        <button type="button" onclick="abrirCategoria('${categoryName}')" aria-label="Volver a la categoría ${categoryName}">${categoryName}</button> > 
+        <span style="font-weight:bold;" aria-current="page">${viewName}</span>`;
+    } else {
+      breadcrumb.innerHTML = `
+        <button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button> > 
+        <span style="font-weight:bold;" aria-current="page">${viewName}</span>`;
+    }
   }
 
   if (viewId === "cart") renderCart();
   if (viewId === "favorites") renderFavs();
+
+  // Mejora de accesibilidad: Anunciar cambio de vista
+  announce(`Se ha cargado la vista de ${viewName || viewId}`);
 }
 
 function openProduct(id, nombre, precio) {
-  productoActual = { id, nombre, precio };
+  // Encontrar la categoría real del producto para las migas de pan
+  let categoryName = "";
+  categorias.forEach(cat => {
+    if (cat.productos.some(p => p.id === id)) {
+      categoryName = cat.titulo;
+    }
+  });
+
+  productoActual = { id, nombre, precio, categoryName };
   const title = $("detail-title");
   const price = $("detail-price");
   const img = $("detail-img");
@@ -458,7 +479,7 @@ function openProduct(id, nombre, precio) {
   if (title) title.textContent = nombre;
   if (price) price.textContent = precio;
   if (img) img.innerHTML = `<span>[Imagen Grande Prod ${id}]</span>`;
-  navigate("product", nombre);
+  navigate("product", nombre, categoryName);
 }
 
 function abrirCategoria(nombreCat) {
@@ -467,14 +488,24 @@ function abrirCategoria(nombreCat) {
   if (!title || !grid) return;
 
   title.textContent = nombreCat;
+  
+  // Buscar datos reales en la base de datos mock
+  const catData = categorias.find(c => c.titulo === nombreCat);
   let gridHTML = "";
-  for (let i = 1; i <= 30; i++) {
-    gridHTML += generarTarjeta({
-      id: 100 + i,
-      nombre: `${nombreCat} Producto ${i}`,
-      precio: `$${(Math.random() * 500).toFixed(2)}`,
-    });
+
+  if (catData) {
+    gridHTML = catData.productos.map(p => generarTarjeta(p)).join("");
+  } else {
+    // Para categorías rápidas, generar items genéricos
+    for (let i = 1; i <= 20; i++) {
+      gridHTML += generarTarjeta({
+        id: 200 + i,
+        nombre: `${nombreCat} Articulo ${i}`,
+        precio: `$${(Math.random() * 500 + 10).toFixed(2)}`,
+      });
+    }
   }
+
   grid.innerHTML = gridHTML;
   navigate("category", nombreCat);
 }

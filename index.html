@@ -123,31 +123,34 @@
                 ✖
             </button>
             <h3>Menú</h3>
-            <div class="menu-item mobile-only" onclick="toggleTheme()">
+            <button class="menu-item mobile-only" onclick="toggleTheme()" aria-label="Cambiar tema de color (Claro/Oscuro)">
                 <i class="fa-solid fa-circle-half-stroke"></i>
                 <span>Cambiar Tema</span>
-            </div>
-            <div
+            </button>
+            <button
                 class="menu-item mobile-only"
                 onclick="navigate('account', 'Mi Cuenta')"
+                aria-label="Ir a Mi Cuenta"
             >
                 <i class="fa-solid fa-circle-user"></i>
                 <span>Mi Cuenta</span>
-            </div>
-            <div
+            </button>
+            <button
                 class="menu-item mobile-only"
                 onclick="navigate('favorites', 'Favoritos')"
+                aria-label="Ir a Mis Favoritos"
             >
                 <i class="fa-solid fa-heart"></i>
                 <span>Favoritos</span>
-            </div>
-            <div
+            </button>
+            <button
                 class="menu-item mobile-only"
                 onclick="navigate('cart', 'Carrito')"
+                aria-label="Ir al Carrito de compras"
             >
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span>Carrito</span>
-            </div>
+            </button>
             <button class="menu-item" onclick="openModal('locationModal')" style="width:100%; text-align:left; background:none; border:none; padding: 1rem 0; cursor:pointer; font-family:inherit; font-size:inherit; color:inherit; display:flex; align-items:center; gap:1rem;">
                 <span
                     class="icon-placeholder"
@@ -159,7 +162,7 @@
                 ></span>
                 <span id="locationText">📍 Agregar ubicación de entrega</span>
             </button>
-            <div class="menu-item">
+            <div class="menu-item" aria-hidden="true">
                 <span
                     class="icon-placeholder"
                     style="
@@ -170,9 +173,15 @@
                 ></span>
                 Departamentos
             </div>
-            <div class="menu-item">Electrónica</div>
-            <div class="menu-item">Hogar y Muebles</div>
-            <div class="menu-item">Despensa</div>
+            <button class="menu-item" onclick="abrirCategoria('Electrónica y Gaming')" aria-label="Ver departamento de Electrónica y Gaming" style="width:100%; text-align:left; background:none; border:none; padding: 1rem 0; cursor:pointer; font-family:inherit; font-size:inherit; color:inherit;">
+                Electrónica y Gaming
+            </button>
+            <button class="menu-item" onclick="abrirCategoria('Hogar y Electrodomésticos')" aria-label="Ver departamento de Hogar y Electrodomésticos" style="width:100%; text-align:left; background:none; border:none; padding: 1rem 0; cursor:pointer; font-family:inherit; font-size:inherit; color:inherit;">
+                Hogar y Electrodomésticos
+            </button>
+            <button class="menu-item" onclick="abrirCategoria('Despensa Básica')" aria-label="Ver departamento de Despensa Básica" style="width:100%; text-align:left; background:none; border:none; padding: 1rem 0; cursor:pointer; font-family:inherit; font-size:inherit; color:inherit;">
+                Despensa Básica
+            </button>
         </aside>
 
         <div class="modal-overlay" id="loginModal">
