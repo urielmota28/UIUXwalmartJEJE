@@ -222,7 +222,7 @@ function generarTarjeta(prod) {
 
   return `
         <article class="product-card">
-            <button class="btn-fav" onclick="toggleFav(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar a favoritos" style="background-color: ${isFav ? "var(--primary-blue)" : "var(--accent-yellow)"}">
+            <button class="btn-fav" data-id="${prod.id}" onclick="toggleFav(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar a favoritos" style="background-color: ${isFav ? "var(--primary-blue)" : "var(--accent-yellow)"}">
                 <i class="${isFav ? "fa-solid" : "fa-regular"} fa-heart" style="color: white; font-size: 1.2rem;"></i>
             </button>
 
@@ -678,20 +678,32 @@ function toggleFavProdActual(event) {
 }
 
 function toggleFav(id, nombre, precio, event) {
-  const btn = event.currentTarget;
-  const icon = btn.querySelector("i");
   const index = favoritos.findIndex((f) => f.id === id);
   if (index === -1) {
     favoritos.push({ id, nombre, precio });
-    btn.style.backgroundColor = "var(--primary-blue)";
-    if (icon) icon.classList.replace("fa-regular", "fa-solid");
     announce(`${nombre} agregado a favoritos.`);
   } else {
     favoritos.splice(index, 1);
-    btn.style.backgroundColor = "var(--accent-yellow)";
-    if (icon) icon.classList.replace("fa-solid", "fa-regular");
     announce(`${nombre} eliminado de favoritos.`);
   }
+  // Sincronizar todos los corazones visibles en el sitio
+  updateAllFavButtonsUI();
+}
+
+function updateAllFavButtonsUI() {
+  document.querySelectorAll(".btn-fav").forEach((btn) => {
+    const id = parseInt(btn.dataset.id);
+    if (!id) return;
+    const isFav = favoritos.some((f) => f.id === id);
+    const icon = btn.querySelector("i");
+    if (isFav) {
+      btn.style.backgroundColor = "var(--primary-blue)";
+      if (icon) icon.classList.replace("fa-regular", "fa-solid");
+    } else {
+      btn.style.backgroundColor = "var(--accent-yellow)";
+      if (icon) icon.classList.replace("fa-solid", "fa-regular");
+    }
+  });
 }
 
 function renderCart() {
