@@ -148,7 +148,7 @@
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span>Carrito</span>
             </div>
-            <div class="menu-item">
+            <button class="menu-item" onclick="openModal('locationModal')" style="width:100%; text-align:left; background:none; border:none; padding: 1rem 0; cursor:pointer; font-family:inherit; font-size:inherit; color:inherit; display:flex; align-items:center; gap:1rem;">
                 <span
                     class="icon-placeholder"
                     style="
@@ -157,8 +157,8 @@
                         background-color: var(--text-light);
                     "
                 ></span>
-                📍 Agregar ubicación de entrega
-            </div>
+                <span id="locationText">📍 Agregar ubicación de entrega</span>
+            </button>
             <div class="menu-item">
                 <span
                     class="icon-placeholder"

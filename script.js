@@ -89,7 +89,8 @@ function saveLocation() {
   const input = $("inputLocation").value.trim();
   if (input) {
     ubicacionUsuario = input;
-    $("locationText").textContent = `📍 ${ubicacionUsuario}`;
+    const locText = $("locationText");
+    if (locText) locText.textContent = `📍 ${ubicacionUsuario}`;
     closeModals();
     announce(`Ubicación actualizada a: ${ubicacionUsuario}`);
   }
@@ -227,19 +228,23 @@ function initApp() {
   iniciarCarrusel();
   setupSearch();
 
-  $("detail-add-cart").onclick = function (e) {
-    if (productoActual)
-      addToCart(
-        productoActual.id,
-        productoActual.nombre,
-        productoActual.precio,
-        e,
-      );
-  };
+  const addCartBtn = $("detail-add-cart");
+  if (addCartBtn) {
+    addCartBtn.onclick = function (e) {
+        if (productoActual)
+          addToCart(
+            productoActual.id,
+            productoActual.nombre,
+            productoActual.precio,
+            e,
+          );
+    };
+  }
 }
 
 function renderSections() {
   const container = $("sections-container");
+  if (!container) return;
   container.innerHTML = categorias
     .map(
       (cat, index) => `
@@ -264,7 +269,9 @@ function setupCategoriasRapidas() {
     "Goleada",
     "Express",
   ];
-  $("quickCategories").innerHTML = nombres
+  const container = $("quickCategories");
+  if (!container) return;
+  container.innerHTML = nombres
     .map(
       (n, i) => `
         <button type="button" class="cat-item" onclick="abrirCategoria('${n}')">
@@ -284,6 +291,8 @@ function setupSearch() {
   const suggestions = $("searchSuggestions");
   const btn = $("searchBtn");
 
+  if (!input || !suggestions || !btn) return;
+
   input.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase().trim();
     if (query.length < 2) {
@@ -291,13 +300,12 @@ function setupSearch() {
       return;
     }
 
-    // Filtrar productos de todas las categorías
     const allProducts = categorias.flatMap((c) =>
       c.productos.map((p) => ({ ...p, cat: c.titulo })),
     );
     const matches = allProducts
       .filter((p) => p.nombre.toLowerCase().includes(query))
-      .slice(0, 6); // Limitar a 6 sugerencias
+      .slice(0, 6);
 
     if (matches.length > 0) {
       suggestions.innerHTML = matches
@@ -316,7 +324,6 @@ function setupSearch() {
     }
   });
 
-  // Cerrar sugerencias al hacer clic fuera
   document.addEventListener("click", (e) => {
     if (!input.contains(e.target) && !suggestions.contains(e.target)) {
       suggestions.classList.add("hidden");
@@ -331,7 +338,6 @@ function setupSearch() {
     }
   });
 
-  // Búsqueda al presionar Enter
   input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       btn.click();
@@ -340,18 +346,22 @@ function setupSearch() {
 }
 
 function abrirResultadosBusqueda(query) {
-  $("category-title").textContent = `Resultados para: "${query}"`;
+  const title = $("category-title");
+  const grid = $("category-grid");
+  if (!title || !grid) return;
+
+  title.textContent = `Resultados para: "${query}"`;
   const allProducts = categorias.flatMap((c) => c.productos);
   const matches = allProducts.filter((p) =>
     p.nombre.toLowerCase().includes(query.toLowerCase()),
   );
 
   if (matches.length > 0) {
-    $("category-grid").innerHTML = matches
+    grid.innerHTML = matches
       .map((p) => generarTarjeta(p))
       .join("");
   } else {
-    $("category-grid").innerHTML = `
+    grid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
             <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: var(--text-light); margin-bottom: 1rem;"></i>
             <p style="font-size: 1.2rem; color: var(--text-dark);">No encontramos resultados para "${query}"</p>
@@ -383,13 +393,13 @@ function navigate(viewId, viewName = "") {
   
   window.scrollTo(0, 0);
 
-  // Cerrar sidebar automáticamente en móvil tras navegar
-  if ($("sidebar").classList.contains("active")) {
-    $("sidebar").classList.remove("active");
-    $("sidebarOverlay").classList.remove("active");
+  const sidebar = $("sidebar");
+  const overlay = $("sidebarOverlay");
+  if (sidebar && sidebar.classList.contains("active")) {
+    sidebar.classList.remove("active");
+    if (overlay) overlay.classList.remove("active");
   }
 
-  // Resaltar ítem activo en el menú (Mejora predictiva)
   document.querySelectorAll(".sidebar .menu-item").forEach((item) => {
     item.classList.remove("active");
     if (
@@ -401,10 +411,12 @@ function navigate(viewId, viewName = "") {
   });
 
   const breadcrumb = $("breadcrumb-container");
-  if (viewId === "home")
-    breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button>`;
-  else
-    breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
+  if (breadcrumb) {
+    if (viewId === "home")
+      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button>`;
+    else
+      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
+  }
 
   if (viewId === "cart") renderCart();
   if (viewId === "favorites") renderFavs();
@@ -412,14 +424,22 @@ function navigate(viewId, viewName = "") {
 
 function openProduct(id, nombre, precio) {
   productoActual = { id, nombre, precio };
-  $("detail-title").textContent = nombre;
-  $("detail-price").textContent = precio;
-  $("detail-img").innerHTML = `<span>[Imagen Grande Prod ${id}]</span>`;
+  const title = $("detail-title");
+  const price = $("detail-price");
+  const img = $("detail-img");
+  
+  if (title) title.textContent = nombre;
+  if (price) price.textContent = precio;
+  if (img) img.innerHTML = `<span>[Imagen Grande Prod ${id}]</span>`;
   navigate("product", nombre);
 }
 
 function abrirCategoria(nombreCat) {
-  $("category-title").textContent = nombreCat;
+  const title = $("category-title");
+  const grid = $("category-grid");
+  if (!title || !grid) return;
+
+  title.textContent = nombreCat;
   let gridHTML = "";
   for (let i = 1; i <= 30; i++) {
     gridHTML += generarTarjeta({
@@ -428,7 +448,7 @@ function abrirCategoria(nombreCat) {
       precio: `$${(Math.random() * 500).toFixed(2)}`,
     });
   }
-  $("category-grid").innerHTML = gridHTML;
+  grid.innerHTML = gridHTML;
   navigate("category", nombreCat);
 }
 
@@ -437,7 +457,8 @@ function abrirCategoria(nombreCat) {
    ========================================= */
 function addToCart(id, nombre, precio, event) {
   carrito.push({ id, nombre, precio });
-  $("cartCount").textContent = `Carrito (${carrito.length})`;
+  const count = $("cartCount");
+  if (count) count.textContent = `Carrito (${carrito.length})`;
 
   announce(`${nombre} ha sido agregado al carrito.`);
 
@@ -460,7 +481,8 @@ function addToCart(id, nombre, precio, event) {
 
 function removeFromCart(index) {
   carrito.splice(index, 1);
-  $("cartCount").textContent = `Carrito (${carrito.length})`;
+  const count = $("cartCount");
+  if (count) count.textContent = `Carrito (${carrito.length})`;
   renderCart();
 }
 
@@ -485,12 +507,12 @@ function toggleFav(id, nombre, precio, event) {
   if (index === -1) {
     favoritos.push({ id, nombre, precio });
     btn.style.backgroundColor = "var(--primary-blue)";
-    icon.classList.replace("fa-regular", "fa-solid");
+    if (icon) icon.classList.replace("fa-regular", "fa-solid");
     announce(`${nombre} agregado a favoritos.`);
   } else {
     favoritos.splice(index, 1);
     btn.style.backgroundColor = "var(--accent-yellow)";
-    icon.classList.replace("fa-solid", "fa-regular");
+    if (icon) icon.classList.replace("fa-solid", "fa-regular");
     announce(`${nombre} eliminado de favoritos.`);
   }
 }
@@ -498,6 +520,7 @@ function toggleFav(id, nombre, precio, event) {
 function renderCart() {
   const container = $("cart-list");
   const footer = $("cart-footer");
+  if (!container) return;
 
   if (carrito.length === 0) {
     container.innerHTML = "<p>Tu carrito está vacío.</p>";
@@ -523,12 +546,14 @@ function renderCart() {
 
   if (footer) {
     footer.style.display = "block";
-    $("cart-total").textContent = `Total: ${formatPrice(total)}`;
+    const totalEl = $("cart-total");
+    if (totalEl) totalEl.textContent = `Total: ${formatPrice(total)}`;
   }
 }
 
 function renderFavs() {
   const container = $("fav-list");
+  if (!container) return;
   container.innerHTML =
     favoritos.length === 0
       ? "<p>No tienes artículos en favoritos.</p>"
@@ -544,13 +569,20 @@ function renderFavs() {
    UI Extras
    ========================================= */
 function setupSidebar() {
+  const sidebar = $("sidebar");
+  const overlay = $("sidebarOverlay");
+  const menuBtn = $("menuBtn");
+  const closeBtn = $("closeSidebar");
+
+  if (!sidebar || !overlay || !menuBtn || !closeBtn) return;
+
   const toggleMenu = () => {
-    $("sidebar").classList.toggle("active");
-    $("sidebarOverlay").classList.toggle("active");
+    sidebar.classList.toggle("active");
+    overlay.classList.toggle("active");
   };
-  $("menuBtn").addEventListener("click", toggleMenu);
-  $("closeSidebar").addEventListener("click", toggleMenu);
-  $("sidebarOverlay").addEventListener("click", toggleMenu);
+  menuBtn.addEventListener("click", toggleMenu);
+  closeBtn.addEventListener("click", toggleMenu);
+  overlay.addEventListener("click", toggleMenu);
 }
 
 function toggleTheme() {
@@ -564,14 +596,15 @@ function changeFontSize(step) {
 }
 
 function openModal(id) {
-  $(id).classList.add("active");
+  const modal = $(id);
+  if (modal) modal.classList.add("active");
 }
 
 function closeModals() {
-  $("loginModal").classList.remove("active");
-  $("registerModal").classList.remove("active");
-  $("checkoutModal").classList.remove("active");
-  $("locationModal").classList.remove("active");
+  ["loginModal", "registerModal", "checkoutModal", "locationModal"].forEach(id => {
+    const modal = $(id);
+    if (modal) modal.classList.remove("active");
+  });
 }
 
 let curSlide = 0;
@@ -584,6 +617,8 @@ function moveCarousel(step) {
   if (slides.length === 0) return;
   slides[curSlide].classList.remove("active");
   curSlide = (curSlide + step + slides.length) % slides.length;
+  slides[curSlide].classList.add("add-active"); // Usando add-active para evitar conflictos si existe, pero el CSS usa .active
+  // Corrección: El CSS usa .active
   slides[curSlide].classList.add("active");
   clearInterval(slideTimer);
   iniciarCarrusel();
