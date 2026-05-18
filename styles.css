@@ -291,7 +291,7 @@ body.dark-mode .suggestion-item:hover {
     transition: transform 0.2s ease;
 }
 .action-btn:hover {
-    transform: scale(1.1);
+    transform: translateY(-2px);
 }
 .action-btn i {
     font-size: 1.5rem;
@@ -336,12 +336,13 @@ body.dark-mode .suggestion-item:hover {
     height: 100vh;
     background: var(--white);
     z-index: 201;
-    transition: var(--transition);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateX(0);
     padding: 2rem 1rem;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
 }
 .sidebar.active {
-    left: 0;
+    transform: translateX(300px);
 }
 .close-sidebar {
     position: absolute;
@@ -367,9 +368,11 @@ body.dark-mode .suggestion-item:hover {
     cursor: pointer;
     font-weight: 500;
     color: var(--text-dark);
+    transition: padding-left 0.2s ease, color 0.2s ease;
 }
 .menu-item:hover {
     color: var(--text-blue);
+    padding-left: 6px;
 }
 
 /* =========================================
@@ -385,7 +388,7 @@ body.dark-mode .suggestion-item:hover {
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    transition: var(--transition);
+    transition: opacity 0.3s ease;
 }
 .modal-overlay.active {
     opacity: 1;
@@ -399,12 +402,12 @@ body.dark-mode .suggestion-item:hover {
     width: 90%;
     max-width: 400px;
     position: relative;
-    transform: translateY(-20px);
-    transition: var(--transition);
+    transform: scale(0.9) translateY(-10px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 .modal-overlay.active .modal-box {
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
 }
 .close-modal {
     position: absolute;
@@ -441,6 +444,13 @@ body.dark-mode .suggestion-item:hover {
     font-weight: bold;
     margin-top: 1rem;
 }
+.btn-full:slide, .btn-full:hover {
+    background: var(--secondary-blue);
+    transform: translateY(-1px);
+}
+.btn-full:active {
+    transform: translateY(1px);
+}
 
 /* =========================================
    Main Layout & Views
@@ -464,6 +474,10 @@ main {
     border: 1px solid #ccc;
     border-radius: 20px;
     font-weight: bold;
+}
+.btn-back:hover {
+    background: var(--bg-light);
+    transform: translateX(-3px);
 }
 .section-divider {
     border: 0;
@@ -496,12 +510,14 @@ main {
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: 0.5s ease;
+    transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    transform: scale(0.95);
     text-align: center;
 }
 .slide.active {
     opacity: 1;
     z-index: 10;
+    transform: scale(1);
 }
 .car-btn {
     position: absolute;
@@ -515,6 +531,13 @@ main {
     border-radius: 50%;
     font-size: 1.5rem;
     z-index: 20;
+    transition: background-color 0.2s, transform 0.2s;
+}
+.car-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+.car-btn:active {
+    transform: translateY(-50%) scale(0.9);
 }
 
 .cat-grid {
@@ -534,7 +557,7 @@ main {
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .cat-item:hover {
     transform: scale(1.05) translateY(-3px);
@@ -550,10 +573,11 @@ main {
     justify-content: center;
     color: var(--text-blue);
     font-weight: bold;
-    transition: var(--transition);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 .cat-item:hover .cat-img {
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    border-color: var(--accent-yellow);
+    box-shadow: 0 4px 12px rgba(0, 113, 206, 0.15);
 }
 
 /* =========================================
@@ -578,7 +602,7 @@ main {
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform 0.4s cubic-bezier(0.16.5, 0.84, 0.44, 1), box-shadow 0.4s ease;
     border: none;
 }
 .video-card:nth-child(1) { background: linear-gradient(45deg, #ff416c, #ff4b2b); }
@@ -586,14 +610,18 @@ main {
 .video-card:nth-child(3) { background: linear-gradient(45deg, #a8ff78, #78ffd6); }
 
 .video-card:hover {
-    transform: scale(1.03);
-    filter: brightness(1.05);
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
 }
 .video-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: 0.8;
+    transition: transform 0.5s ease;
+}
+.video-card:hover img {
+    transform: scale(1.06);
 }
 .video-overlay {
     position: absolute;
@@ -610,10 +638,16 @@ main {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(0.9);
     font-size: 3rem;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.8);
     pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s;
+}
+.video-card:hover .video-play-icon {
+    transform: translate(-50%, -50%) scale(1.1);
+    color: #ffffff;
+    text-shadow: 0 0 15px rgba(255, 255, 32, 0.6);
 }
 .video-card h4 {
     font-size: 1rem;
@@ -710,13 +744,14 @@ main {
     display: flex;
     flex-direction: column;
     position: relative;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                box-shadow 0.4s ease, 
-                background-color 0.3s ease;
+    transition:
+        transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+        box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
+        background-color 0.3s;
 }
 .product-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* Botón favoritos (Amarillo, Esquina superior derecha curvo) */
@@ -735,13 +770,13 @@ main {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 10;
     overflow: hidden;
-    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.2s;
+}
+.btn-fav:hover {
+    transform: scale(1.1) rotate(15deg);
 }
 .btn-fav:active {
-    transform: scale(0.85);
-}
-.btn-fav.active i {
-    color: var(--danger) !important;
+    transform: scale(0.95);
 }
 
 /* Espacio Blanco curvo para la Imagen */
@@ -757,6 +792,13 @@ main {
     font-size: 0.8rem;
     overflow: hidden;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+.image-placeholder img {
+    transition: transform 0.4s ease;
+}
+.product-card:hover .image-placeholder img {
+    transform: scale(1.05);
 }
 .image-placeholder img {
     transition: transform 0.4s ease;
@@ -789,7 +831,7 @@ main {
     justify-content: center;
     flex-shrink: 0;
     overflow: hidden;
-    transition: background-color 0.4s ease, transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: background-color 0.4s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
 }
 .btn-buy-icon.active,
 .btn-add-icon.active {
@@ -797,11 +839,12 @@ main {
 }
 .btn-buy-icon:hover,
 .btn-add-icon:hover {
-    transform: scale(1.08);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 .btn-buy-icon:active,
 .btn-add-icon:active {
-    transform: scale(0.92);
+    transform: translateY(1px) scale(0.98);
 }
 
 /* Contenedor de Texto */
@@ -846,6 +889,7 @@ main {
     background: var(--white);
     padding: 2rem;
     border-radius: var(--border-radius);
+    transition: background-color 0.3s;
 }
 .detail-image {
     width: 100%;
@@ -856,6 +900,7 @@ main {
     align-items: center;
     justify-content: center;
     color: var(--text-light);
+    transition: background-color 0.3s;
 }
 .detail-info h2 {
     font-size: 2rem;
@@ -879,16 +924,23 @@ main {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    transition: transform 0.15s ease;
+    transition: transform 0.2s ease, background-color 0.2s, box-shadow 0.2s;
+}
+.detail-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
 }
 .detail-actions button:active {
-    transform: scale(0.95);
+    transform: translateY(1px);
 }
 .btn-primary {
     background: var(--primary-blue);
     color: #ffffff;
     border: none;
     flex-grow: 1;
+}
+.btn-primary:hover {
+    background: var(--secondary-blue);
 }
 
 .btn-buy {
@@ -901,6 +953,9 @@ main {
 .btn-buy:hover {
     background-color: rgba(0, 113, 206, 0.1);
 }
+body.dark-mode .btn-buy {
+    border-color: #ffffff;
+}
 body.dark-mode .btn-buy:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -909,6 +964,7 @@ body.dark-mode .btn-buy:hover {
     background: var(--white);
     border-radius: var(--border-radius);
     padding: 2rem;
+    transition: background-color 0.3s;
 }
 .list-item {
     display: flex;
@@ -916,6 +972,13 @@ body.dark-mode .btn-buy:hover {
     justify-content: space-between;
     padding: 1rem;
     border-bottom: 1px solid var(--bg-light);
+    transition: background-color 0.2s;
+}
+.list-item:hover {
+    background-color: rgba(0, 113, 206, 0.03);
+}
+body.dark-mode .list-item:hover {
+    background-color: rgba(255, 255, 255, 0.03);
 }
 
 /* =========================================
@@ -946,6 +1009,7 @@ footer {
     font-size: 0.9rem;
     cursor: pointer;
     color: #ccc;
+    transition: color 0.2s;
 }
 .footer-section p:hover {
     color: #fff;
@@ -998,19 +1062,4 @@ footer {
     .view-header h2 {
         font-size: 1.4rem;
     }
-}
-
-/* Sincronizacion de componentes */
-#main-content.animate__fadeOut {
-    animation-duration: 0.35s;
-    filter: blur(4px); 
-}
-
-#main-content.animate__fadeIn {
-    animation-duration: 0.45s;
-}
-
-#toast {
-    transition: bottom 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-                opacity 0.25s ease !important;
 }
