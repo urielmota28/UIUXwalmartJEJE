@@ -506,7 +506,15 @@ function renderCart() {
   container.innerHTML = carrito.map((item, index) => {
     const price = parsePrice(item.precio);
     total += price;
-    return `<div class="list-item"><div><span>${item.nombre}</span><br><strong>${formatPrice(price)}</strong></div><button onclick="removeFromCart(${index})">×</button></div>`;
+    return `
+            <div class="list-item">
+                <div style="display: flex; flex-direction: column; gap: 0.3rem;">
+                    <span style="font-size: 1.1rem;">${item.nombre}</span>
+                    <strong style="color: var(--text-blue); font-size: 1.2rem;">${formatPrice(price)}</strong>
+                </div>
+                <button style="background: transparent; border: none; font-size: 2rem; color: var(--danger); cursor: pointer; padding: 0 0.5rem;" onclick="removeFromCart(${index})" title="Eliminar del carrito">×</button>
+            </div>
+        `;
   }).join("");
   $("cart-footer").style.display = "block";
   $("cart-total").textContent = `Total: ${formatPrice(total)}`;
