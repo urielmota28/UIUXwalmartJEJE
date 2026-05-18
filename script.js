@@ -600,7 +600,7 @@ function renderFavs() {
   container.innerHTML = favoritos
     .map(
       (item) =>
-        `<div class="list-item"><span>${item.nombre}</span><button class="btn-back" onclick="openProduct(${item.id})">Ver</button></div>`,
+        `<div class="list-item"><span>${item.nombre}</span><button class= "btn-back" onclick="openProduct(${item.id})">Ver</button></div>`,
     )
     .join("");
 }
