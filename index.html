@@ -24,24 +24,25 @@
                     <button
                         id="menuBtn"
                         class="action-btn"
-                        aria-label="Abrir menú"
+                        aria-label="Abrir menú de navegación"
                     >
                         <i
                             class="fa-solid fa-bars"
                             style="color: rgb(255, 212, 59)"
+                            aria-hidden="true"
                         ></i>
                     </button>
                     <button
                         class="logo-container"
                         onclick="navigate('home')"
-                        aria-label="Ir al inicio"
+                        aria-label="Walmart - Ir al inicio"
                     >
                         <img
                             src="walmartlogo.png"
-                            alt="Logo de Walmart"
+                            alt=""
                             class="logo-img"
                         />
-                        <span>Walmart</span>
+                        <h1 style="font-size: inherit; font-family: inherit; margin: 0; display: inline;">Walmart</h1>
                     </button>
                 </div>
 
@@ -56,30 +57,33 @@
                             placeholder="¿Qué estás buscando?"
                             autocomplete="off"
                         />
-                        <div id="searchSuggestions" class="search-suggestions hidden"></div>
+                        <div id="searchSuggestions" class="search-suggestions hidden" role="listbox" aria-label="Sugerencias de búsqueda"></div>
                     </div>
-                    <button id="searchBtn">Buscar</button>
+                    <button id="searchBtn" aria-label="Ejecutar búsqueda">Buscar</button>
                 </div>
 
                 <div class="header-actions">
                     <button
                         class="action-btn"
                         onclick="toggleTheme()"
-                        title="Cambiar Tema"
+                        aria-label="Cambiar Tema claro u oscuro"
                     >
                         <i
                             class="fa-solid fa-circle-half-stroke"
                             style="color: rgb(255, 212, 59)"
+                            aria-hidden="true"
                         ></i>
                         <span>Tema</span>
                     </button>
                     <button
                         class="action-btn"
                         onclick="navigate('account', 'Mi Cuenta')"
+                        aria-label="Ir a Mi Cuenta"
                     >
                         <i
                             class="fa-solid fa-circle-user"
                             style="color: rgb(255, 212, 59)"
+                            aria-hidden="true"
                         ></i>
 
                         <span>Cuenta</span>
@@ -87,10 +91,12 @@
                     <button
                         class="action-btn"
                         onclick="navigate('favorites', 'Favoritos')"
+                        aria-label="Ir a Mis Favoritos"
                     >
                         <i
                             class="fa-solid fa-heart"
                             style="color: rgb(255, 212, 59)"
+                            aria-hidden="true"
                         ></i>
 
                         <span>Favoritos</span>
@@ -98,33 +104,35 @@
                     <button
                         class="action-btn"
                         onclick="navigate('cart', 'Carrito')"
+                        aria-label="Ir al Carrito de compras"
                     >
                         <i
                             class="fa-solid fa-cart-shopping"
                             style="color: rgb(255, 212, 59)"
+                            aria-hidden="true"
                         ></i>
 
                         <span id="cartCount">Carrito (0)</span>
                     </button>
                 </div>
             </div>
-            <nav class="breadcrumbs" id="breadcrumb-container">
-                <button type="button" onclick="navigate('home')">Inicio</button>
+            <nav class="breadcrumbs" id="breadcrumb-container" aria-label="Ruta de navegación">
+                <button type="button" onclick="navigate('home')" aria-label="Ir al Inicio">Inicio</button>
             </nav>
         </header>
 
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar" id="sidebar" aria-labelledby="sidebar-title">
             <button
                 class="close-sidebar"
                 id="closeSidebar"
-                aria-label="Cerrar menú"
+                aria-label="Cerrar menú de navegación"
             >
                 ✖
             </button>
-            <h3>Menú</h3>
+            <h2 id="sidebar-title" style="font-size: 1.2rem; margin-bottom: 1.5rem; border-bottom: 1px solid #ccc; padding-bottom: 0.5rem; color: var(--text-dark);">Menú</h2>
             <button class="menu-item mobile-only" onclick="toggleTheme()" aria-label="Cambiar tema de color (Claro/Oscuro)">
-                <i class="fa-solid fa-circle-half-stroke"></i>
+                <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
                 <span>Cambiar Tema</span>
             </button>
             <button
@@ -132,7 +140,7 @@
                 onclick="navigate('account', 'Mi Cuenta')"
                 aria-label="Ir a Mi Cuenta"
             >
-                <i class="fa-solid fa-circle-user"></i>
+                <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
                 <span>Mi Cuenta</span>
             </button>
             <button
@@ -140,7 +148,7 @@
                 onclick="navigate('favorites', 'Favoritos')"
                 aria-label="Ir a Mis Favoritos"
             >
-                <i class="fa-solid fa-heart"></i>
+                <i class="fa-solid fa-heart" aria-hidden="true"></i>
                 <span>Favoritos</span>
             </button>
             <button
@@ -148,10 +156,10 @@
                 onclick="navigate('cart', 'Carrito')"
                 aria-label="Ir al Carrito de compras"
             >
-                <i class="fa-solid fa-cart-shopping"></i>
+                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
                 <span>Carrito</span>
             </button>
-            <button class="menu-item" onclick="openModal('locationModal')" style="width:100%; text-align:left; background:none; border:none; padding: 1rem 0; cursor:pointer; font-family:inherit; font-size:inherit; color:inherit; display:flex; align-items:center; gap:1rem;">
+            <button class="menu-item" onclick="openModal('locationModal')" aria-label="Abrir configuración de ubicación de entrega" style="width:100%; text-align:left; background:none; border:none; padding: 1rem 0; cursor:pointer; font-family:inherit; font-size:inherit; color:inherit; display:flex; align-items:center; gap:1rem;">
                 <span
                     class="icon-placeholder"
                     style="
@@ -159,6 +167,7 @@
                         height: 20px;
                         background-color: var(--text-light);
                     "
+                    aria-hidden="true"
                 ></span>
                 <span id="locationText">📍 Agregar ubicación de entrega</span>
             </button>
@@ -184,16 +193,17 @@
             </button>
         </aside>
 
-        <div class="modal-overlay" id="loginModal">
+        <div class="modal-overlay" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="login-title">
             <div class="modal-box">
-                <button class="close-modal" onclick="closeModals()">✖</button>
-                <h2 style="margin-bottom: 1.5rem">Iniciar Sesión</h2>
+                <button class="close-modal" onclick="closeModals()" aria-label="Cerrar inicio de sesión">✖</button>
+                <h2 id="login-title" style="margin-bottom: 1.5rem">Iniciar Sesión</h2>
                 <div class="input-group">
-                    <label for="login-email">Correo</label>
+                    <label for="login-email">Correo electrónico</label>
                     <input
                         type="email"
                         id="login-email"
                         placeholder="ejemplo@correo.com"
+                        required
                     />
                 </div>
                 <div class="input-group">
@@ -202,6 +212,7 @@
                         type="password"
                         id="login-password"
                         placeholder="********"
+                        required
                     />
                 </div>
                 <button class="btn-full" onclick="closeModals()">
@@ -210,24 +221,25 @@
             </div>
         </div>
 
-        <div class="modal-overlay" id="registerModal">
+        <div class="modal-overlay" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="register-title">
             <div class="modal-box">
-                <button class="close-modal" onclick="closeModals()">✖</button>
-                <h2 style="margin-bottom: 1.5rem">Crear Cuenta</h2>
+                <button class="close-modal" onclick="closeModals()" aria-label="Cerrar registro">✖</button>
+                <h2 id="register-title" style="margin-bottom: 1.5rem">Crear Cuenta</h2>
                 <div class="input-group">
                     <label for="reg-name">Nombre Completo</label>
-                    <input type="text" id="reg-name" placeholder="Juan Pérez" />
+                    <input type="text" id="reg-name" placeholder="Juan Pérez" required />
                 </div>
                 <div class="input-group">
                     <label for="reg-country">País</label>
-                    <input type="text" id="reg-country" placeholder="México" />
+                    <input type="text" id="reg-country" placeholder="México" required />
                 </div>
                 <div class="input-group">
-                    <label for="reg-email">Correo</label>
+                    <label for="reg-email">Correo electrónico</label>
                     <input
                         type="email"
                         id="reg-email"
                         placeholder="ejemplo@correo.com"
+                        required
                     />
                 </div>
                 <div class="input-group">
@@ -236,6 +248,7 @@
                         type="password"
                         id="reg-password"
                         placeholder="********"
+                        required
                     />
                 </div>
                 <div class="input-group">
@@ -244,6 +257,7 @@
                         type="password"
                         id="reg-password-confirm"
                         placeholder="********"
+                        required
                     />
                 </div>
                 <button class="btn-full" onclick="closeModals()">
@@ -252,10 +266,10 @@
             </div>
         </div>
 
-        <div class="modal-overlay" id="locationModal">
+        <div class="modal-overlay" id="locationModal" role="dialog" aria-modal="true" aria-labelledby="location-title">
             <div class="modal-box">
-                <button class="close-modal" onclick="closeModals()">✖</button>
-                <h2 style="margin-bottom: 1.5rem">Ubicación de entrega</h2>
+                <button class="close-modal" onclick="closeModals()" aria-label="Cerrar ubicación">✖</button>
+                <h2 id="location-title" style="margin-bottom: 1.5rem">Ubicación de entrega</h2>
                 <div class="input-group">
                     <label for="inputLocation">Dirección Completa</label>
                     <input type="text" id="inputLocation" placeholder="Calle, Número, Ciudad..." />
@@ -264,14 +278,14 @@
             </div>
         </div>
 
-        <div class="modal-overlay" id="checkoutModal">
+        <div class="modal-overlay" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
             <div class="modal-box" style="max-width: 500px;">
-                <button class="close-modal" onclick="closeModals()">✖</button>
-                <h2 style="margin-bottom: 1rem; color: var(--text-title)">
+                <button class="close-modal" onclick="closeModals()" aria-label="Cerrar ticket">✖</button>
+                <h2 id="checkout-title" style="margin-bottom: 1rem; color: var(--text-title)">
                     Ticket de compra
                 </h2>
 
-                <div id="checkoutSummary" style="
+                <div id="checkoutSummary" aria-label="Resumen de productos" style="
                     margin-bottom: 1rem;
                     color: var(--text-dark);
                     max-height: 120px;
@@ -283,40 +297,52 @@
 
                 <!-- Sección de Dirección en Checkout -->
                 <div id="checkoutAddressSection" style="margin-bottom: 1.5rem;">
-                    <h4 style="margin-bottom: 0.5rem;">Dirección de envío</h4>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">Dirección de envío</h3>
                     <div id="savedAddressDisplay" class="hidden" style="background: #eef; padding: 0.8rem; border-radius: 8px; margin-bottom: 0.5rem;">
                         <p id="displayShippingAddress" style="font-size: 0.9rem;"></p>
                         <button onclick="toggleNewAddress(true)" style="font-size: 0.8rem; color: var(--primary-blue); background: none; border: none; padding: 0; cursor: pointer; text-decoration: underline;">Usar otra dirección</button>
                     </div>
                     <div id="newAddressForm" class="input-group">
+                        <label for="checkoutNewAddress">Nueva dirección de envío</label>
                         <input type="text" id="checkoutNewAddress" placeholder="Ingresa dirección de envío" />
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label style="font-weight: bold; color: var(--text-dark)">Método de pago</label>
-                    <select id="paymentMethod" onchange="togglePaymentFields()" style="
-                        padding: 0.8rem;
-                        border: 1px solid var(--text-light);
-                        border-radius: var(--border-radius);
-                        background: var(--white);
-                        color: var(--text-dark);
-                        font-family: inherit;
-                        font-size: 1rem;
-                        width: 100%;
-                    ">
-                        <option value="visa">Visa / MasterCard</option>
-                        <option value="paypal">PayPal</option>
-                        <option value="tienda">Pago en tienda</option>
-                    </select>
+                    <label for="paymentMethod" style="font-weight: bold; color: var(--text-dark)">Método de pago</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <select id="paymentMethod" style="
+                            padding: 0.8rem;
+                            border: 1px solid var(--text-light);
+                            border-radius: var(--border-radius);
+                            background: var(--white);
+                            color: var(--text-dark);
+                            font-family: inherit;
+                            font-size: 1rem;
+                            width: 100%;
+                            flex: 1;
+                        ">
+                            <option value="visa">Visa / MasterCard</option>
+                            <option value="paypal">PayPal</option>
+                            <option value="tienda">Pago en tienda</option>
+                        </select>
+                        <button type="button" onclick="togglePaymentFields()" style="background: var(--accent-yellow); border: none; padding: 0 1rem; border-radius: 8px; font-weight: bold;" aria-label="Confirmar cambio de método de pago">Actualizar</button>
+                    </div>
                 </div>
 
                 <!-- Campos de Tarjeta / PayPal -->
                 <div id="cardFields" class="input-group">
-                    <input type="text" id="cardNumber" placeholder="Número de tarjeta" maxlength="16" />
+                    <label for="cardNumber">Número de tarjeta</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9101 1121" maxlength="16" />
                     <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" id="cardExpiry" placeholder="MM/AA" style="flex: 2;" maxlength="5" />
-                        <input type="text" id="cardCVV" placeholder="CVV" style="flex: 1;" maxlength="3" />
+                        <div style="flex: 2; display: flex; flex-direction: column; gap: 0.2rem;">
+                            <label for="cardExpiry" style="font-size: 0.8rem;">MM/AA</label>
+                            <input type="text" id="cardExpiry" placeholder="12/26" maxlength="5" />
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; gap: 0.2rem;">
+                            <label for="cardCVV" style="font-size: 0.8rem;">CVV</label>
+                            <input type="text" id="cardCVV" placeholder="123" maxlength="3" />
+                        </div>
                     </div>
                 </div>
 
