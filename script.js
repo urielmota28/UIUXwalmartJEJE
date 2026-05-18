@@ -514,16 +514,20 @@ function addToCart(id, event) {
 
   // Micro-interacción universal para botones de "Agregar al carrito"
   const clickedBtn = event?.currentTarget;
-  if (clickedBtn && (clickedBtn.id === "detail-add-cart" || clickedBtn.classList.contains("btn-add-icon"))) {
+  if (
+    clickedBtn &&
+    (clickedBtn.id === "detail-add-cart" ||
+      clickedBtn.classList.contains("btn-add-icon"))
+  ) {
     const originalHTML = clickedBtn.innerHTML;
     const isIconOnly = clickedBtn.classList.contains("btn-add-icon");
-    
+
     clickedBtn.classList.add("added-success");
     clickedBtn.innerHTML = `<i class="fa-solid fa-check"></i> ${isIconOnly ? "" : "Añadido"}`;
-    
+
     // Si es el de la tarjeta, podemos poner "Añadido" aunque sea pequeño porque el CSS permite crecer
     if (isIconOnly) {
-        clickedBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span style="font-size: 0.8rem; margin-left: 5px;">Añadido</span>`;
+      clickedBtn.innerHTML = `<i class="fa-solid fa-check"></i> <span style="font-size: 0.8rem; margin-left: 5px;">Añadido</span>`;
     }
 
     setTimeout(() => {
@@ -533,7 +537,12 @@ function addToCart(id, event) {
   }
 
   // Efecto genérico para otros botones que no sean los de arriba
-  if (event && event.currentTarget && !event.currentTarget.classList.contains("added-success") && event.currentTarget.id !== "detail-add-cart") {
+  if (
+    event &&
+    event.currentTarget &&
+    !event.currentTarget.classList.contains("added-success") &&
+    event.currentTarget.id !== "detail-add-cart"
+  ) {
     const btn = event.currentTarget;
     btn.classList.add("active");
     setTimeout(() => btn.classList.remove("active"), 2000);
