@@ -441,10 +441,14 @@ function navigate(viewId, viewName = "", categoryName = "") {
   }
   const breadcrumb = $("breadcrumb-container");
   if (breadcrumb) {
-    if (viewId === "product" && categoryName) {
+    if (viewId === "home") breadcrumb.hidden = true;
+    else if (viewId === "product" && categoryName) {
+      breadcrumb.hidden = false;
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <button type="button" onclick="abrirCategoria('${categoryName}')">${categoryName}</button> > <span style="font-weight:bold;">${viewName}</span>`;
-    } else
+    } else {
+      breadcrumb.hidden = false;
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
+    }
   }
   if (viewId === "cart") renderCart();
   if (viewId === "favorites") renderFavs();
