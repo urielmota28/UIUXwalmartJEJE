@@ -213,13 +213,10 @@ function iniciarOnboarding() {
     popoverClass: "walmart-onboarding-popover",
     steps: [
       {
-        element: "body",
         popover: {
           title: "Bienvenido a Walmart",
           description:
             "Te mostraremos rapidamente como usar nuestra nueva tienda.",
-          side: "center",
-          align: "center",
         },
       },
       {
