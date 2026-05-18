@@ -197,6 +197,78 @@ function generarTarjeta(prod) {
 }
 
 /* =========================================
+   Onboarding (Driver.js)
+   ========================================= */
+function iniciarOnboarding() {
+  if (localStorage.getItem("onboardingCompleted")) return;
+
+  const driverObj = window.driver.js.driver({
+    showProgress: true,
+    animate: true,
+    nextBtnText: "Siguiente",
+    prevBtnText: "Anterior",
+    doneBtnText: "Finalizar",
+    allowClose: false,
+    popoverClass: "walmart-onboarding-popover",
+    steps: [
+      {
+        popover: {
+          title: "Bienvenido a Walmart",
+          description:
+            "Te mostraremos rapidamente como usar nuestra nueva tienda.",
+          position: "center",
+        },
+      },
+      {
+        element: "#menuBtn",
+        popover: {
+          title: "Menu de Navegacion",
+          description:
+            "Aqui puedes explorar todos nuestros departamentos y configurar tu ubicacion de entrega.",
+          side: "bottom",
+          align: "start",
+        },
+      },
+      {
+        element: ".search-bar",
+        popover: {
+          title: "Buscador",
+          description:
+            "Encuentra productos rapidamente escribiendo lo que necesitas aqui.",
+          side: "bottom",
+          align: "center",
+        },
+      },
+      {
+        element: '.header-actions button[onclick="toggleTheme()"]',
+        popover: {
+          title: "Apariencia",
+          description:
+            "Cambia entre el modo claro y oscuro segun tu preferencia.",
+          side: "bottom",
+          align: "center",
+        },
+      },
+      {
+        element: '.header-actions button[onclick="navigate(\'cart\', \'Carrito\')"]',
+        popover: {
+          title: "Carrito de Compras",
+          description:
+            "Revisa los productos que has seleccionado y procede al pago.",
+          side: "bottom",
+          align: "end",
+        },
+      },
+    ],
+    onDestroyed: () => {
+      localStorage.setItem("onboardingCompleted", "true");
+    },
+  });
+
+  driverObj.drive();
+}
+
+/* =========================================
    Renderizado Inicial
    ========================================= */
 function initApp() {
@@ -213,6 +285,9 @@ function initApp() {
       if (productoActual) addToCart(productoActual.id, e);
     };
   }
+
+  // Iniciar onboarding si es la primera vez
+  setTimeout(iniciarOnboarding, 1000);
 }
 
 const videosTendencia = [

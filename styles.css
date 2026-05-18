@@ -1227,3 +1227,78 @@ body.dark-mode #savedAddressDisplay {
         font-size: 1.4rem;
     }
 }
+
+/* =========================================
+   Onboarding (Driver.js) Overrides
+   ========================================= */
+.driver-popover.walmart-onboarding-popover {
+    font-family: 'Poppins', sans-serif !important;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    max-width: 350px;
+    background-color: var(--white);
+    color: var(--text-dark);
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700;
+    color: var(--primary-blue);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-description {
+    font-family: 'Poppins', sans-serif !important;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-footer {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+/* Reutilizando estilos de botones de la app */
+.driver-popover.walmart-onboarding-popover .driver-popover-next-btn {
+    background-color: var(--primary-blue) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 20px !important;
+    padding: 0.5rem 1.2rem !important;
+    font-weight: bold !important;
+    font-family: 'Poppins', sans-serif !important;
+    text-shadow: none !important;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-prev-btn {
+    background-color: var(--white) !important;
+    color: var(--text-dark) !important;
+    border: 1px solid #ccc !important;
+    border-radius: 20px !important;
+    padding: 0.5rem 1.2rem !important;
+    font-weight: bold !important;
+    font-family: 'Poppins', sans-serif !important;
+    text-shadow: none !important;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-next-btn:hover {
+    background-color: var(--secondary-blue) !important;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-prev-btn:hover {
+    background-color: var(--bg-light) !important;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-progress-text {
+    color: var(--text-light) !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 0.8rem;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-close-btn {
+    color: var(--text-light) !important;
+}
