@@ -268,13 +268,24 @@ function renderSections() {
 }
 
 function setupCategoriasRapidas() {
-  const nombres = ["Ahorro", "Flash Deals", "Nuestras Marcas", "Walmart Pass", "Súper", "Prichos", "Goleada", "Express"];
+  const categoriasInfo = [
+    { nombre: "Ahorro", file: "Ahorro.jpg" },
+    { nombre: "Flash Deals", file: "Flash Deals.jpg" },
+    { nombre: "Nuestras Marcas", file: "Nuestras Marcas.jpg" },
+    { nombre: "Walmart Pass", file: "Walmart Pass.jpg" },
+    { nombre: "Súper", file: "Súper.jpg" },
+    { nombre: "Prichos", file: "prichos.jpg" },
+    { nombre: "Goleada", file: "Goleada.jpg" },
+    { nombre: "Express", file: "Express.jpg" }
+  ];
   const container = $("quickCategories");
   if (!container) return;
-  container.innerHTML = nombres.map((n, i) => `
-    <button type="button" class="cat-item" onclick="abrirCategoriaSimulada('${n}')">
-        <div class="cat-img">Img ${i + 1}</div>
-        <span style="font-weight: bold; font-size: 0.9rem; color: var(--text-blue);">${n}</span>
+  container.innerHTML = categoriasInfo.map((cat) => `
+    <button type="button" class="cat-item" onclick="abrirCategoriaSimulada('${cat.nombre}')">
+        <div class="cat-img" style="overflow: hidden;">
+            <img src="${cat.file}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <span style="font-weight: bold; font-size: 0.9rem; color: var(--text-blue);">${cat.nombre}</span>
     </button>`).join("");
 }
 
