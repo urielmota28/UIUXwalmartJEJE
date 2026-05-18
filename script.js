@@ -199,6 +199,7 @@ function initApp() {
   setupCategoriasRapidas();
   iniciarCarrusel();
   setupSearch();
+  navigate("home");
 
   const addCartBtn = $("detail-add-cart");
   if (addCartBtn) {
@@ -441,12 +442,13 @@ function navigate(viewId, viewName = "", categoryName = "") {
   }
   const breadcrumb = $("breadcrumb-container");
   if (breadcrumb) {
-    if (viewId === "home") breadcrumb.hidden = true;
-    else if (viewId === "product" && categoryName) {
-      breadcrumb.hidden = false;
+    if (viewId === "home") {
+      breadcrumb.classList.add("hidden");
+    } else if (viewId === "product" && categoryName) {
+      breadcrumb.classList.remove("hidden");
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <button type="button" onclick="abrirCategoria('${categoryName}')">${categoryName}</button> > <span style="font-weight:bold;">${viewName}</span>`;
     } else {
-      breadcrumb.hidden = false;
+      breadcrumb.classList.remove("hidden");
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
     }
   }
