@@ -44,6 +44,8 @@ let carrito = [];
 let favoritos = [];
 let productoActual = null;
 let ubicacionUsuario = "";
+let fontSizeStep = 0; // 0 es el tamaño original, min -3, max 3
+const MAX_FONT_STEPS = 3;
 
 /* =========================================
    Gestión de Ubicación
@@ -670,10 +672,23 @@ function toggleTheme() {
   document.body.classList.toggle("dark-mode");
 }
 
-function changeFontSize(step) {
+function changeFontSize(direction) {
+  // direction: 1 para aumentar, -1 para reducir
+  const newStep = fontSizeStep + direction;
+
+  // Validar límites (-3 a 3)
+  if (newStep > MAX_FONT_STEPS || newStep < -MAX_FONT_STEPS) {
+    announce("Límite de tamaño de fuente alcanzado");
+    return;
+  }
+
+  fontSizeStep = newStep;
   const html = document.documentElement;
-  let size = parseInt(window.getComputedStyle(html).fontSize);
-  html.style.fontSize = size + step * 2 + "px";
+  // Calculamos el tamaño basado en el paso (2px por paso, base 16px)
+  const newSize = 16 + fontSizeStep * 2;
+  html.style.fontSize = newSize + "px";
+
+  announce(`Tamaño de fuente ajustado. Nivel: ${fontSizeStep}`);
 }
 
 function openModal(id) {
