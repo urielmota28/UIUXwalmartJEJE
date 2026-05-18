@@ -92,7 +92,8 @@ function toggleNewAddress(forceShowForm = false) {
 
 function abrirCheckout() {
   let total = 0;
-  let resumenHTML = '<ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">';
+  let resumenHTML =
+    '<ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">';
 
   carrito.forEach((item) => {
     const price = parsePrice(item.precio);
@@ -128,10 +129,12 @@ function finalizarCompra() {
     const cvv = $("cardCVV").value.trim();
 
     if (!card) errores.push("- El número de tarjeta es obligatorio.");
-    else if (card.length < 15 || card.length > 16) errores.push("- El número de tarjeta debe tener 15 o 16 dígitos.");
+    else if (card.length < 15 || card.length > 16)
+      errores.push("- El número de tarjeta debe tener 15 o 16 dígitos.");
 
     if (!expiry) errores.push("- La fecha de expiración es obligatoria.");
-    else if (!/^\d{2}\/\d{2}$/.test(expiry)) errores.push("- El formato de expiración debe ser MM/AA.");
+    else if (!/^\d{2}\/\d{2}$/.test(expiry))
+      errores.push("- El formato de expiración debe ser MM/AA.");
 
     if (!cvv) errores.push("- El código CVV es obligatorio.");
     else if (cvv.length !== 3) errores.push("- El CVV debe tener 3 dígitos.");
@@ -206,9 +209,27 @@ function initApp() {
 }
 
 const videosTendencia = [
-  { id: 1, titulo: "MrBeast en Walmart", descripcion: "Go! x3", url: "https://www.youtube.com/shorts/vXNtju4VFm4", img: "https://img.youtube.com/vi/vXNtju4VFm4/maxresdefault.jpg" },
-  { id: 2, titulo: "Walmart USA Tour", descripcion: "¿Qué venden en Walmart USA?", url: "https://www.youtube.com/shorts/k3SV2dLaX5A", img: "https://img.youtube.com/vi/k3SV2dLaX5A/maxresdefault.jpg" },
-  { id: 3, titulo: "Mamá Lucha", descripcion: "Súper Días de Ahorro", url: "https://www.youtube.com/shorts/vYZzvSOoa5A", img: "https://img.youtube.com/vi/vYZzvSOoa5A/maxresdefault.jpg" }
+  {
+    id: 1,
+    titulo: "MrBeast en Walmart",
+    descripcion: "Go! x3",
+    url: "https://www.youtube.com/shorts/vXNtju4VFm4",
+    img: "https://img.youtube.com/vi/vXNtju4VFm4/maxresdefault.jpg",
+  },
+  {
+    id: 2,
+    titulo: "Walmart USA Tour",
+    descripcion: "¿Qué venden en Walmart USA?",
+    url: "https://www.youtube.com/shorts/k3SV2dLaX5A",
+    img: "https://img.youtube.com/vi/k3SV2dLaX5A/maxresdefault.jpg",
+  },
+  {
+    id: 3,
+    titulo: "Mamá Lucha",
+    descripcion: "Súper Días de Ahorro",
+    url: "https://www.youtube.com/shorts/vYZzvSOoa5A",
+    img: "https://img.youtube.com/vi/vYZzvSOoa5A/maxresdefault.jpg",
+  },
 ];
 
 function renderVideoSection() {
@@ -216,7 +237,9 @@ function renderVideoSection() {
     <section class="video-section">
       <h2 class="section-title">Tendencia</h2>
       <div class="video-grid">
-        ${videosTendencia.map(v => `
+        ${videosTendencia
+          .map(
+            (v) => `
           <button class="video-card" onclick="window.open('${v.url}', '_blank')" aria-label="Reproducir video: ${v.titulo}">
             <img src="${v.img}" alt="" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; z-index: 0;">
             <div class="video-play-icon" style="z-index: 1;"><i class="fa-solid fa-play"></i></div>
@@ -225,7 +248,9 @@ function renderVideoSection() {
               <p style="font-size: 0.8rem; opacity: 0.9;">${v.descripcion}</p>
             </div>
           </button>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>
     </section>
   `;
@@ -234,20 +259,26 @@ function renderVideoSection() {
 function renderSections() {
   const container = $("sections-container");
   if (!container) return;
-  
+
   const titulosMarketing = {
     "Electronica y gaming": "Descuentazos",
     "Hogar y Electrodomesticos": "Te puede interesar",
-    "Despensa Basica": "Supermercado"
+    "Despensa Basica": "Supermercado",
   };
 
-  const cats = ["Electronica y gaming", "Hogar y Electrodomesticos", "Despensa Basica"];
+  const cats = [
+    "Electronica y gaming",
+    "Hogar y Electrodomesticos",
+    "Despensa Basica",
+  ];
   let html = "";
-  
+
   cats.forEach((catName, index) => {
     const tituloDisplay = titulosMarketing[catName] || catName;
-    const dashboardProds = ITEMS.filter(p => p.categoria === catName && p.isdashboard);
-    
+    const dashboardProds = ITEMS.filter(
+      (p) => p.categoria === catName && p.isdashboard,
+    );
+
     html += `
         <section>
             <h2 class="section-title">${tituloDisplay}</h2>
@@ -263,7 +294,7 @@ function renderSections() {
       html += '<hr class="section-divider">';
     }
   });
-  
+
   container.innerHTML = html;
 }
 
@@ -276,17 +307,21 @@ function setupCategoriasRapidas() {
     { nombre: "Súper", file: "Súper.jpg" },
     { nombre: "Prichos", file: "prichos.jpg" },
     { nombre: "Goleada", file: "Goleada.jpg" },
-    { nombre: "Express", file: "Express.jpg" }
+    { nombre: "Express", file: "Express.jpg" },
   ];
   const container = $("quickCategories");
   if (!container) return;
-  container.innerHTML = categoriasInfo.map((cat) => `
+  container.innerHTML = categoriasInfo
+    .map(
+      (cat) => `
     <button type="button" class="cat-item" onclick="abrirCategoriaSimulada('${cat.nombre}')">
         <div class="cat-img" style="overflow: hidden;">
             <img src="${cat.file}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
         <span style="font-weight: bold; font-size: 0.9rem; color: var(--text-blue);">${cat.nombre}</span>
-    </button>`).join("");
+    </button>`,
+    )
+    .join("");
 }
 
 function abrirCategoria(nombreCat) {
@@ -294,19 +329,19 @@ function abrirCategoria(nombreCat) {
   const grid = $("category-grid");
   if (!title || !grid) return;
   title.textContent = nombreCat;
-  const prods = ITEMS.filter(p => p.categoria === nombreCat);
-  grid.innerHTML = prods.map(p => generarTarjeta(p)).join("");
+  const prods = ITEMS.filter((p) => p.categoria === nombreCat);
+  grid.innerHTML = prods.map((p) => generarTarjeta(p)).join("");
   navigate("category", nombreCat);
 }
 
 function abrirCategoriaSimulada(nombreCat) {
-    const title = $("category-title");
-    const grid = $("category-grid");
-    if (!title || !grid) return;
-    title.textContent = nombreCat;
-    const mixedProds = [...ITEMS].sort(() => 0.5 - Math.random()).slice(0, 20);
-    grid.innerHTML = mixedProds.map(p => generarTarjeta(p)).join("");
-    navigate("category", nombreCat);
+  const title = $("category-title");
+  const grid = $("category-grid");
+  if (!title || !grid) return;
+  title.textContent = nombreCat;
+  const mixedProds = [...ITEMS].sort(() => 0.5 - Math.random()).slice(0, 20);
+  grid.innerHTML = mixedProds.map((p) => generarTarjeta(p)).join("");
+  navigate("category", nombreCat);
 }
 
 /* =========================================
@@ -325,14 +360,20 @@ function setupSearch() {
       return;
     }
     const cleanQuery = removeAccents(query);
-    const matches = ITEMS.filter((p) => removeAccents(p.nombre.toLowerCase()).includes(cleanQuery)).slice(0, 6);
+    const matches = ITEMS.filter((p) =>
+      removeAccents(p.nombre.toLowerCase()).includes(cleanQuery),
+    ).slice(0, 6);
 
     if (matches.length > 0) {
-      suggestions.innerHTML = matches.map((m) => `
+      suggestions.innerHTML = matches
+        .map(
+          (m) => `
         <div class="suggestion-item" onclick="openProduct(${m.id}); $('searchSuggestions').classList.add('hidden');">
           <span class="prod-name">${m.nombre}</span>
           <span class="prod-cat">${m.categoria}</span>
-        </div>`).join("");
+        </div>`,
+        )
+        .join("");
       suggestions.classList.remove("hidden");
     } else {
       suggestions.classList.add("hidden");
@@ -340,7 +381,8 @@ function setupSearch() {
   });
 
   document.addEventListener("click", (e) => {
-    if (!input.contains(e.target) && !suggestions.contains(e.target)) suggestions.classList.add("hidden");
+    if (!input.contains(e.target) && !suggestions.contains(e.target))
+      suggestions.classList.add("hidden");
   });
 
   btn.addEventListener("click", () => {
@@ -362,7 +404,9 @@ function abrirResultadosBusqueda(query) {
   if (!title || !grid) return;
   title.textContent = `Resultados para: "${query}"`;
   const cleanQuery = removeAccents(query.toLowerCase());
-  const matches = ITEMS.filter((p) => removeAccents(p.nombre.toLowerCase()).includes(cleanQuery));
+  const matches = ITEMS.filter((p) =>
+    removeAccents(p.nombre.toLowerCase()).includes(cleanQuery),
+  );
   if (matches.length > 0) {
     grid.innerHTML = matches.map((p) => generarTarjeta(p)).join("");
   } else {
@@ -375,7 +419,15 @@ function abrirResultadosBusqueda(query) {
    Navegación
    ========================================= */
 function navigate(viewId, viewName = "", categoryName = "") {
-  ["home", "product", "cart", "favorites", "account", "faq", "category"].forEach((id) => {
+  [
+    "home",
+    "product",
+    "cart",
+    "favorites",
+    "account",
+    "faq",
+    "category",
+  ].forEach((id) => {
     const el = $(`view-${id}`);
     if (el) el.classList.add("hidden");
   });
@@ -389,10 +441,12 @@ function navigate(viewId, viewName = "", categoryName = "") {
   }
   const breadcrumb = $("breadcrumb-container");
   if (breadcrumb) {
-    if (viewId === "home") breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button>`;
+    if (viewId === "home")
+      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button>`;
     else if (viewId === "product" && categoryName) {
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <button type="button" onclick="abrirCategoria('${categoryName}')">${categoryName}</button> > <span style="font-weight:bold;">${viewName}</span>`;
-    } else breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
+    } else
+      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
   }
   if (viewId === "cart") renderCart();
   if (viewId === "favorites") renderFavs();
@@ -400,17 +454,18 @@ function navigate(viewId, viewName = "", categoryName = "") {
 }
 
 function openProduct(id) {
-  const product = ITEMS.find(p => p.id === id);
+  const product = ITEMS.find((p) => p.id === id);
   if (!product) return;
   productoActual = product;
   $("detail-title").textContent = product.nombre;
   $("detail-price").textContent = formatPrice(product.precio);
-  $("detail-img").innerHTML = `<img src="${product.imgurl}" alt="${product.nombre}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+  $("detail-img").innerHTML =
+    `<img src="${product.imgurl}" alt="${product.nombre}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
   $("detail-description").textContent = product.descripcion;
 
   const favBtn = $("detail-fav-btn");
   if (favBtn) {
-    const isFav = favoritos.some(f => f.id === id);
+    const isFav = favoritos.some((f) => f.id === id);
     const icon = favBtn.querySelector("i");
     if (isFav) {
       favBtn.style.backgroundColor = "var(--primary-blue)";
@@ -425,8 +480,10 @@ function openProduct(id) {
 
   const relatedGrid = $("related-grid");
   if (relatedGrid) {
-    const related = ITEMS.filter(p => p.categoria === product.categoria && p.id !== id).slice(0, 5);
-    relatedGrid.innerHTML = related.map(p => generarTarjeta(p)).join("");
+    const related = ITEMS.filter(
+      (p) => p.categoria === product.categoria && p.id !== id,
+    ).slice(0, 5);
+    relatedGrid.innerHTML = related.map((p) => generarTarjeta(p)).join("");
   }
   navigate("product", product.nombre, product.categoria);
 }
@@ -435,7 +492,7 @@ function openProduct(id) {
    Carrito y Favoritos
    ========================================= */
 function addToCart(id, event) {
-  const product = ITEMS.find(p => p.id === id);
+  const product = ITEMS.find((p) => p.id === id);
   if (product) {
     carrito.push(product);
     $("cartCount").textContent = `Carrito (${carrito.length})`;
@@ -466,7 +523,7 @@ function comprarAhoraProdActual() {
 function toggleFav(id, event) {
   const index = favoritos.findIndex((f) => f.id === id);
   if (index === -1) {
-    const product = ITEMS.find(p => p.id === id);
+    const product = ITEMS.find((p) => p.id === id);
     if (product) favoritos.push(product);
   } else favoritos.splice(index, 1);
   updateAllFavButtonsUI();
@@ -475,7 +532,7 @@ function toggleFav(id, event) {
 function toggleFavProdActual(event) {
   if (productoActual) {
     toggleFav(productoActual.id, event);
-    const isFav = favoritos.some(f => f.id === productoActual.id);
+    const isFav = favoritos.some((f) => f.id === productoActual.id);
     const favBtn = $("detail-fav-btn");
     const icon = favBtn.querySelector("i");
     if (isFav) {
@@ -514,10 +571,11 @@ function renderCart() {
     return;
   }
   let total = 0;
-  container.innerHTML = carrito.map((item, index) => {
-    const price = parsePrice(item.precio);
-    total += price;
-    return `
+  container.innerHTML = carrito
+    .map((item, index) => {
+      const price = parsePrice(item.precio);
+      total += price;
+      return `
             <div class="list-item">
                 <div style="display: flex; flex-direction: column; gap: 0.3rem;">
                     <span style="font-size: 1.1rem;">${item.nombre}</span>
@@ -526,7 +584,8 @@ function renderCart() {
                 <button style="background: transparent; border: none; font-size: 2rem; color: var(--danger); cursor: pointer; padding: 0 0.5rem;" onclick="removeFromCart(${index})" title="Eliminar del carrito">×</button>
             </div>
         `;
-  }).join("");
+    })
+    .join("");
   $("cart-footer").style.display = "block";
   $("cart-total").textContent = `Total: ${formatPrice(total)}`;
 }
@@ -538,41 +597,60 @@ function renderFavs() {
     container.innerHTML = "<p>Sin favoritos.</p>";
     return;
   }
-  container.innerHTML = favoritos.map(item => `<div class="list-item"><span>${item.nombre}</span><button onclick="openProduct(${item.id})">Ver</button></div>`).join("");
+  container.innerHTML = favoritos
+    .map(
+      (item) =>
+        `<div class="list-item"><span>${item.nombre}</span><button class="btn-back" onclick="openProduct(${item.id})">Ver</button></div>`,
+    )
+    .join("");
 }
 
 /* =========================================
    UI
    ========================================= */
 function setupSidebar() {
-  const toggle = () => { $("sidebar").classList.toggle("active"); $("sidebarOverlay").classList.toggle("active"); };
+  const toggle = () => {
+    $("sidebar").classList.toggle("active");
+    $("sidebarOverlay").classList.toggle("active");
+  };
   $("menuBtn").addEventListener("click", toggle);
   $("closeSidebar").addEventListener("click", toggle);
   $("sidebarOverlay").addEventListener("click", toggle);
 }
 
-function toggleTheme() { document.body.classList.toggle("dark-mode"); }
+function toggleTheme() {
+  document.body.classList.toggle("dark-mode");
+}
 
 function changeFontSize(step) {
   const html = document.documentElement;
   let size = parseInt(window.getComputedStyle(html).fontSize);
-  html.style.fontSize = (size + step * 2) + "px";
+  html.style.fontSize = size + step * 2 + "px";
 }
 
-function openModal(id) { $(id).classList.add("active"); }
+function openModal(id) {
+  $(id).classList.add("active");
+}
 
-function closeModals() { ["loginModal", "registerModal", "checkoutModal", "locationModal"].forEach(id => $(id).classList.remove("active")); }
+function closeModals() {
+  ["loginModal", "registerModal", "checkoutModal", "locationModal"].forEach(
+    (id) => $(id).classList.remove("active"),
+  );
+}
 
 let curSlide = 0;
 let slideTimer;
-function iniciarCarrusel() { slideTimer = setInterval(() => moveCarousel(1), 10000); }
+function iniciarCarrusel() {
+  slideTimer = setInterval(() => moveCarousel(1), 10000);
+}
 function moveCarousel(step) {
   const slides = document.querySelectorAll(".slide");
   if (slides.length === 0) return;
   slides[curSlide].classList.remove("active");
   curSlide = (curSlide + step + slides.length) % slides.length;
   slides[curSlide].classList.add("active");
-  clearInterval(slideTimer); iniciarCarrusel();
+  clearInterval(slideTimer);
+  iniciarCarrusel();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);
