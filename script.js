@@ -197,6 +197,147 @@ function generarTarjeta(prod) {
 }
 
 /* =========================================
+   Custom Onboarding System (UI/UX Expert)
+   ========================================= */
+const onboardingSteps = [
+  {
+    title: "Bienvenido a Walmart",
+    description: "Te guiaremos a traves de las funciones principales de nuestra nueva interfaz de compra.",
+    target: null // Centrado
+  },
+  {
+    title: "Menu de Navegacion",
+    description: "Desde aqui puedes acceder a todos los departamentos y gestionar tu ubicacion de entrega rapidamente.",
+    target: "#menuBtn"
+  },
+  {
+    title: "Buscador Inteligente",
+    description: "Encuentra cualquier producto al instante escribiendo palabras clave en esta seccion.",
+    target: ".search-bar"
+  },
+  {
+    title: "Personalizacion de Interfaz",
+    description: "Adapta la visualizacion segun tu preferencia utilizando el selector de tema claro u oscuro.",
+    target: 'button[onclick="toggleTheme()"]'
+  },
+  {
+    title: "Carrito de Compras",
+    description: "Revisa los articulos seleccionados y completa tu pedido de manera segura desde este acceso.",
+    target: 'button[onclick*="cart"]'
+  }
+];
+
+let currentOnboardingStep = 0;
+
+function createOnboardingUI() {
+  // Crear overlay
+  const overlay = document.createElement('div');
+  overlay.id = 'onboardingOverlay';
+  overlay.className = 'onboarding-overlay';
+  document.body.appendChild(overlay);
+
+  // Crear resaltado
+  const highlight = document.createElement('div');
+  highlight.id = 'onboardingHighlight';
+  highlight.className = 'onboarding-highlight';
+  document.body.appendChild(highlight);
+
+  // Crear popover
+  const popover = document.createElement('div');
+  popover.id = 'onboardingPopover';
+  popover.className = 'onboarding-popover';
+  popover.innerHTML = `
+    <h3 id="onboardingTitle"></h3>
+    <p id="onboardingDesc"></p>
+    <div class="onboarding-footer">
+      <span class="step-indicator" id="onboardingStepIndicator"></span>
+      <div class="onboarding-btns">
+        <button id="onboardingPrev" class="btn-back" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Anterior</button>
+        <button id="onboardingNext" class="btn-primary" style="padding: 0.5rem 1.5rem; font-size: 0.85rem; border-radius: 20px;">Siguiente</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(popover);
+
+  $("onboardingNext").onclick = nextOnboardingStep;
+  $("onboardingPrev").onclick = prevOnboardingStep;
+}
+
+function renderOnboardingStep() {
+  const step = onboardingSteps[currentOnboardingStep];
+  const popover = $("onboardingPopover");
+  const highlight = $("onboardingHighlight");
+  const overlay = $("onboardingOverlay");
+
+  $("onboardingTitle").textContent = step.title;
+  $("onboardingDesc").textContent = step.description;
+  $("onboardingStepIndicator").textContent = `${currentOnboardingStep + 1} de ${onboardingSteps.length}`;
+  
+  $("onboardingPrev").style.visibility = currentOnboardingStep === 0 ? "hidden" : "visible";
+  $("onboardingNext").textContent = currentOnboardingStep === onboardingSteps.length - 1 ? "Finalizar" : "Siguiente";
+
+  overlay.classList.add("active");
+  popover.classList.add("active");
+
+  if (step.target) {
+    const targetEl = document.querySelector(step.target);
+    if (targetEl) {
+      const rect = targetEl.getBoundingClientRect();
+      
+      // Posicionar resaltado
+      highlight.style.display = "block";
+      highlight.style.top = `${rect.top - 5}px`;
+      highlight.style.left = `${rect.left - 5}px`;
+      highlight.style.width = `${rect.width + 10}px`;
+      highlight.style.height = `${rect.height + 10}px`;
+
+      // Posicionar popover cerca del elemento
+      const popoverTop = rect.bottom + 15;
+      const popoverLeft = Math.max(10, Math.min(window.innerWidth - 330, rect.left));
+      
+      popover.style.top = `${popoverTop}px`;
+      popover.style.left = `${popoverLeft}px`;
+      popover.style.transform = "none";
+    }
+  } else {
+    // Centrar en pantalla para el paso 1
+    highlight.style.display = "none";
+    popover.style.top = "50%";
+    popover.style.left = "50%";
+    popover.style.transform = "translate(-50%, -50%)";
+  }
+}
+
+function nextOnboardingStep() {
+  if (currentOnboardingStep < onboardingSteps.length - 1) {
+    currentOnboardingStep++;
+    renderOnboardingStep();
+  } else {
+    finishOnboarding();
+  }
+}
+
+function prevOnboardingStep() {
+  if (currentOnboardingStep > 0) {
+    currentOnboardingStep--;
+    renderOnboardingStep();
+  }
+}
+
+function finishOnboarding() {
+  $("onboardingOverlay").classList.remove("active");
+  $("onboardingPopover").classList.remove("active");
+  $("onboardingHighlight").style.display = "none";
+  localStorage.setItem("onboardingCompletado", "true");
+}
+
+function initOnboarding() {
+  if (localStorage.getItem("onboardingCompletado")) return;
+  createOnboardingUI();
+  renderOnboardingStep();
+}
+
+/* =========================================
    Renderizado Inicial
    ========================================= */
 function initApp() {
@@ -213,6 +354,9 @@ function initApp() {
       if (productoActual) addToCart(productoActual.id, e);
     };
   }
+
+  // Lanzar onboarding con retraso para asegurar carga de DOM
+  setTimeout(initOnboarding, 1000);
 }
 
 const videosTendencia = [
