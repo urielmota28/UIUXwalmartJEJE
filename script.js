@@ -4,11 +4,7 @@
 const $ = (id) => document.getElementById(id);
 
 // Limpiador y formateador de precios (Para poder hacer matemáticas con "$15,299.00")
-const parsePrice = (str) => {
-  if (typeof str === "number") return str;
-  return parseFloat(str.replace(/[^0-9.-]+/g, ""));
-};
-
+const parsePrice = (str) => parseFloat(str.replace(/[^0-9.-]+/g, ""));
 const formatPrice = (num) =>
   "$" +
   num.toLocaleString("en-US", {
@@ -35,9 +31,61 @@ const announce = (message) => {
 };
 
 /* =========================================
-   Lógica de Datos (Usando ITEMS de Data.js)
+   Base de Datos Mock
    ========================================= */
-// Nota: 'ITEMS' viene de Data.js cargado en index.html
+const categorias = [
+  {
+    titulo: "Electrónica y Gaming",
+    productos: [
+      {
+        id: 1,
+        nombre: "Laptop Gamer 15.6'' 16GB RAM",
+        precio: "$15,299.00",
+        imgsrc: "1.png",
+      },
+      {
+        id: 2,
+        nombre: "Consola de Videojuegos 1TB Blanco",
+        precio: "$8,499.00",
+      },
+      { id: 3, nombre: "Audífonos Inalámbricos Over-Ear", precio: "$1,299.00" },
+      {
+        id: 4,
+        nombre: "Smart TV 55 Pulgadas 4K Ultra HD",
+        precio: "$6,999.00",
+      },
+      { id: 5, nombre: "Monitor Curvo 27'' 144Hz", precio: "$4,500.00" },
+    ],
+  },
+  {
+    titulo: "Hogar y Electrodomésticos",
+    productos: [
+      { id: 6, nombre: "Refrigerador 14 Pies Cúbicos", precio: "$8,990.00" },
+      { id: 7, nombre: "Horno de Microondas Acero Inox", precio: "$1,599.00" },
+      { id: 8, nombre: "Licuadora 10 Velocidades", precio: "$850.00" },
+      { id: 9, nombre: "Silla de Oficina Ergonómica", precio: "$1,850.00" },
+      {
+        id: 10,
+        nombre: "Colchón Matrimonial Memory Foam",
+        precio: "$3,200.00",
+      },
+    ],
+  },
+  {
+    titulo: "Despensa Básica",
+    productos: [
+      { id: 11, nombre: "Aceite Nutrioli 946 ml", precio: "$45.00" },
+      { id: 12, nombre: "Arroz Súper Extra 1 Kg", precio: "$22.50" },
+      { id: 13, nombre: "Leche Entera 1 Litro", precio: "$26.00" },
+      { id: 14, nombre: "Cereal Zucaritas 700g", precio: "$65.00" },
+      {
+        id: 15,
+        nombre: "Café Soluble Nescafé Clásico 225g",
+        precio: "$110.00",
+      },
+    ],
+  },
+];
 
 let carrito = [];
 let favoritos = [];
@@ -91,28 +139,29 @@ function toggleNewAddress(forceShowForm = false) {
 
 function abrirCheckout() {
   let total = 0;
-  let resumenHTML = '<ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">';
+  let resumenHTML =
+    '<ul style="list-style: none; padding: 0; margin: 0; font-size: 0.9rem;">';
 
   carrito.forEach((item) => {
     total += parsePrice(item.precio);
     resumenHTML += `
             <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; border-bottom: 1px dashed var(--text-light); padding-bottom: 0.3rem;">
                 <span style="flex: 1; padding-right: 1rem;">${item.nombre}</span>
-                <strong>${formatPrice(parsePrice(item.precio))}</strong>
+                <strong>${item.precio}</strong>
             </li>`;
   });
   resumenHTML += "</ul>";
   resumenHTML += `<div style="text-align: right; font-size: 1.1rem; color: var(--text-blue); margin-top: 0.5rem;"><strong>Total: ${formatPrice(total)}</strong></div>`;
 
   $("checkoutSummary").innerHTML = resumenHTML;
-  
+
   // Configurar sección de dirección
   toggleNewAddress();
-  
+
   // Resetear campos de pago
   $("paymentMethod").value = "visa";
   togglePaymentFields();
-  
+
   openModal("checkoutModal");
 }
 
@@ -161,7 +210,7 @@ function finalizarCompra() {
   }
 
   alert("¡Compra realizada con éxito! Gracias por elegir Walmart.");
-  
+
   // Limpiar carrito y cerrar
   carrito = [];
   $("cartCount").textContent = `Carrito (0)`;
@@ -176,33 +225,32 @@ function finalizarCompra() {
 function generarTarjeta(prod) {
   const safeName = prod.nombre.replace(/'/g, "\\'");
   const isFav = favoritos.some((f) => f.id === prod.id);
-  const displayPrice = formatPrice(parsePrice(prod.precio));
 
   return `
         <article class="product-card">
-            <button class="btn-fav" data-id="${prod.id}" onclick="toggleFav(${prod.id}, event)" title="Agregar a favoritos" style="background-color: ${isFav ? "var(--primary-blue)" : "var(--accent-yellow)"}">
+            <button class="btn-fav" data-id="${prod.id}" onclick="toggleFav(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar a favoritos" style="background-color: ${isFav ? "var(--primary-blue)" : "var(--accent-yellow)"}">
                 <i class="${isFav ? "fa-solid" : "fa-regular"} fa-heart" style="color: white; font-size: 1.2rem;"></i>
             </button>
 
-            <button type="button" class="image-placeholder" onclick="openProduct(${prod.id})">
-                <img src="${prod.imgurl}" alt="${prod.nombre}" style="width: 100%; height: 100%; object-fit: cover;">
+            <button type="button" class="image-placeholder" onclick="openProduct(${prod.id}, '${safeName}', '${prod.precio}')">
+                <span>Img [${prod.id}]</span>
             </button>
 
             <div class="card-actions">
-                <button class="btn-buy-icon" onclick="comprarRapido(${prod.id})" title="Comprar ahora">
+                <button class="btn-buy-icon" onclick="comprarRapido(${prod.id}, '${safeName}', '${prod.precio}')" title="Comprar ahora">
                     <i class="fa-solid fa-money-bill" style="color: white; font-size: 1.3rem;"></i>
                 </button>
 
-                <button class="btn-add-icon" onclick="addToCart(${prod.id}, event)" title="Agregar al carrito">
+                <button class="btn-add-icon" onclick="addToCart(${prod.id}, '${safeName}', '${prod.precio}', event)" title="Agregar al carrito">
                     <i class="fa-solid fa-cart-plus" style="color: white; font-size: 1.3rem;"></i>
                 </button>
             </div>
 
-            <button type="button" class="card-content" onclick="openProduct(${prod.id})">
-                <div class="product-price">${displayPrice}</div>
+            <button type="button" class="card-content" onclick="openProduct(${prod.id}, '${safeName}', '${prod.precio}')">
+                <div class="product-price">${prod.precio}</div>
                 <div class="product-title">${prod.nombre}</div>
-                <div class="product-brand">${prod.categoria}</div>
-                <div class="product-desc">${prod.descripcion}</div>
+                <div class="product-brand">Marca Genérica</div>
+                <div class="product-desc">Descripción simulada del artículo para coincidir con la referencia visual.</div>
             </button>
         </article>
     `;
@@ -221,16 +269,39 @@ function initApp() {
   const addCartBtn = $("detail-add-cart");
   if (addCartBtn) {
     addCartBtn.onclick = function (e) {
-        if (productoActual)
-          addToCart(productoActual.id, e);
+      if (productoActual)
+        addToCart(
+          productoActual.id,
+          productoActual.nombre,
+          productoActual.precio,
+          e,
+        );
     };
   }
 }
 
 const videosTendencia = [
-  { id: 1, titulo: "MrBeast en Walmart", descripcion: "Go! x3" },
-  { id: 2, titulo: "Walmart USA Tour", descripcion: "¿Qué venden en Walmart USA?" },
-  { id: 3, titulo: "Mascota Bodega Aurrera", descripcion: "Súper Días de Ahorro" }
+  {
+    id: 1,
+    titulo: "MrBeast en Walmart",
+    descripcion: "Go! x3",
+    url: "https://www.youtube.com/shorts/vXNtju4VFm4",
+    img: "https://img.youtube.com/vi/vXNtju4VFm4/maxresdefault.jpg",
+  },
+  {
+    id: 2,
+    titulo: "Walmart USA Tour",
+    descripcion: "¿Qué venden en Walmart USA?",
+    url: "https://www.youtube.com/shorts/k3SV2dLaX5A",
+    img: "https://img.youtube.com/vi/k3SV2dLaX5A/maxresdefault.jpg",
+  },
+  {
+    id: 3,
+    titulo: "Mamá Lucha",
+    descripcion: "Súper Días de Ahorro",
+    url: "https://www.youtube.com/shorts/vYZzvSOoa5A",
+    img: "https://img.youtube.com/vi/vYZzvSOoa5A/maxresdefault.jpg",
+  },
 ];
 
 function renderVideoSection() {
@@ -238,15 +309,20 @@ function renderVideoSection() {
     <section class="video-section">
       <h2 class="section-title">Tendencia</h2>
       <div class="video-grid">
-        ${videosTendencia.map(v => `
-          <button class="video-card" onclick="alert('Reproduciendo: ${v.titulo}')" aria-label="Reproducir video: ${v.titulo}">
-            <div class="video-play-icon"><i class="fa-solid fa-play"></i></div>
-            <div class="video-overlay">
+        ${videosTendencia
+          .map(
+            (v) => `
+          <button class="video-card" onclick="window.open('${v.url}', '_blank')" aria-label="Reproducir video: ${v.titulo}">
+            <img src="${v.img}" alt="Miniatura de Video" style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; z-index: 0;">
+            <div class="video-play-icon" style="z-index: 1;"><i class="fa-solid fa-play"></i></div>
+            <div class="video-overlay" style="z-index: 2;">
               <h4>${v.titulo}</h4>
               <p style="font-size: 0.8rem; opacity: 0.9;">${v.descripcion}</p>
             </div>
           </button>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>
     </section>
   `;
@@ -255,25 +331,22 @@ function renderVideoSection() {
 function renderSections() {
   const container = $("sections-container");
   if (!container) return;
-  
+
   // Mapeo de títulos de base de datos a títulos de marketing para la Home
   const titulosMarketing = {
-    "Electronica y gaming": "Descuentazos",
-    "Hogar y Electrodomesticos": "Te puede interesar",
-    "Despensa Basica": "Supermercado"
+    "Electrónica y Gaming": "Descuentazos",
+    "Hogar y Electrodomésticos": "Te puede interesar",
+    "Despensa Básica": "Supermercado",
   };
 
-  const cats = ["Electronica y gaming", "Hogar y Electrodomesticos", "Despensa Basica"];
   let html = "";
-  
-  cats.forEach((catName, index) => {
-    const tituloDisplay = titulosMarketing[catName] || catName;
-    const dashboardProds = ITEMS.filter(p => p.categoria === catName && p.isdashboard);
-    
+  categorias.forEach((cat, index) => {
+    const tituloDisplay = titulosMarketing[cat.titulo] || cat.titulo;
+
     html += `
         <section>
             <h2 class="section-title">${tituloDisplay}</h2>
-            <div class="product-grid">${dashboardProds.map((p) => generarTarjeta(p)).join("")}</div>
+            <div class="product-grid">${cat.productos.map((p) => generarTarjeta(p)).join("")}</div>
         </section>
     `;
 
@@ -282,11 +355,11 @@ function renderSections() {
       html += '<hr class="section-divider">';
       html += renderVideoSection();
       html += '<hr class="section-divider">';
-    } else if (index < cats.length - 1) {
+    } else if (index < categorias.length - 1) {
       html += '<hr class="section-divider">';
     }
   });
-  
+
   container.innerHTML = html;
 }
 
@@ -306,53 +379,13 @@ function setupCategoriasRapidas() {
   container.innerHTML = nombres
     .map(
       (n, i) => `
-        <button type="button" class="cat-item" onclick="abrirCategoriaSimulada('${n}')">
+        <button type="button" class="cat-item" onclick="abrirCategoria('${n}')">
             <div class="cat-img">Img ${i + 1}</div>
             <span style="font-weight: bold; font-size: 0.9rem; color: var(--text-blue);">${n}</span>
         </button>
     `,
     )
     .join("");
-}
-
-// Para categorías de la base de datos real
-function abrirCategoria(nombreCat) {
-  const title = $("category-title");
-  const grid = $("category-grid");
-  if (!title || !grid) return;
-
-  title.textContent = nombreCat;
-  
-  const prods = ITEMS.filter(p => p.categoria === nombreCat);
-  grid.innerHTML = prods.map(p => generarTarjeta(p)).join("");
-  
-  navigate("category", nombreCat);
-}
-
-// Para categorías de la cinta rápida (simuladas)
-function abrirCategoriaSimulada(nombreCat) {
-    const title = $("category-title");
-    const grid = $("category-grid");
-    if (!title || !grid) return;
-
-    title.textContent = nombreCat;
-    
-    let gridHTML = "";
-    for (let i = 1; i <= 20; i++) {
-      gridHTML += generarTarjeta({
-        id: 1000 + i,
-        nombre: `${nombreCat} Articulo ${i}`,
-        precio: Math.random() * 500 + 10,
-        categoria: nombreCat,
-        descripcion: "Artículo simulado para la categoría " + nombreCat,
-        imgurl: "https://loremflickr.com/320/240/product",
-        isdashboard: false,
-        isFav: false
-      });
-    }
-
-    grid.innerHTML = gridHTML;
-    navigate("category", nombreCat);
 }
 
 /* =========================================
@@ -374,7 +407,10 @@ function setupSearch() {
 
     const cleanQuery = removeAccents(query);
 
-    const matches = ITEMS
+    const allProducts = categorias.flatMap((c) =>
+      c.productos.map((p) => ({ ...p, cat: c.titulo })),
+    );
+    const matches = allProducts
       .filter((p) => removeAccents(p.nombre.toLowerCase()).includes(cleanQuery))
       .slice(0, 6);
 
@@ -382,9 +418,9 @@ function setupSearch() {
       suggestions.innerHTML = matches
         .map(
           (m) => `
-        <div class="suggestion-item" onclick="openProduct(${m.id}); $('searchSuggestions').classList.add('hidden');">
+        <div class="suggestion-item" onclick="openProduct(${m.id}, '${m.nombre.replace(/'/g, "\\'")}', '${m.precio}'); $('searchSuggestions').classList.add('hidden');">
           <span class="prod-name">${m.nombre}</span>
-          <span class="prod-cat">${m.categoria}</span>
+          <span class="prod-cat">${m.cat}</span>
         </div>
       `,
         )
@@ -423,15 +459,13 @@ function abrirResultadosBusqueda(query) {
 
   title.textContent = `Resultados para: "${query}"`;
   const cleanQuery = removeAccents(query.toLowerCase());
-  
-  const matches = ITEMS.filter((p) =>
+  const allProducts = categorias.flatMap((c) => c.productos);
+  const matches = allProducts.filter((p) =>
     removeAccents(p.nombre.toLowerCase()).includes(cleanQuery),
   );
 
   if (matches.length > 0) {
-    grid.innerHTML = matches
-      .map((p) => generarTarjeta(p))
-      .join("");
+    grid.innerHTML = matches.map((p) => generarTarjeta(p)).join("");
   } else {
     grid.innerHTML = `
         <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
@@ -462,7 +496,7 @@ function navigate(viewId, viewName = "", categoryName = "") {
 
   const targetView = $(`view-${viewId}`);
   if (targetView) targetView.classList.remove("hidden");
-  
+
   window.scrollTo(0, 0);
 
   const sidebar = $("sidebar");
@@ -488,12 +522,12 @@ function navigate(viewId, viewName = "", categoryName = "") {
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button>`;
     } else if (viewId === "product" && categoryName) {
       breadcrumb.innerHTML = `
-        <button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button> > 
-        <button type="button" onclick="abrirCategoria('${categoryName}')" aria-label="Volver a la categoría ${categoryName}">${categoryName}</button> > 
+        <button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button> >
+        <button type="button" onclick="abrirCategoria('${categoryName}')" aria-label="Volver a la categoría ${categoryName}">${categoryName}</button> >
         <span style="font-weight:bold;" aria-current="page">${viewName}</span>`;
     } else {
       breadcrumb.innerHTML = `
-        <button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button> > 
+        <button type="button" onclick="navigate('home')" aria-label="Volver al inicio">Inicio</button> >
         <span style="font-weight:bold;" aria-current="page">${viewName}</span>`;
     }
   }
@@ -505,32 +539,36 @@ function navigate(viewId, viewName = "", categoryName = "") {
   announce(`Se ha cargado la vista de ${viewName || viewId}`);
 }
 
-function openProduct(id) {
-  const product = ITEMS.find(p => p.id === id) || {
-      id: id,
-      nombre: "Producto Simulado",
-      precio: 0,
-      categoria: "General",
-      descripcion: "Descripción simulada para este producto.",
-      imgurl: "https://loremflickr.com/320/240/product"
-  };
+function openProduct(id, nombre, precio) {
+  let currentCategory = null;
+  let productData = null;
 
-  productoActual = product;
-  
+  // Encontrar la categoría real del producto para las migas de pan y datos extras
+  categorias.forEach((cat) => {
+    const found = cat.productos.find((p) => p.id === id);
+    if (found) {
+      productData = found;
+      currentCategory = cat;
+    }
+  });
+
+  const categoryName = currentCategory ? currentCategory.titulo : "";
+  productoActual = { id, nombre, precio, categoryName };
+
   const title = $("detail-title");
   const price = $("detail-price");
   const img = $("detail-img");
   const desc = $("detail-description");
   const relatedGrid = $("related-grid");
   const favBtn = $("detail-fav-btn");
-  
-  if (title) title.textContent = product.nombre;
-  if (price) price.textContent = formatPrice(parsePrice(product.precio));
-  if (img) img.innerHTML = `<img src="${product.imgurl}" alt="${product.nombre}" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
-  
+
+  if (title) title.textContent = nombre;
+  if (price) price.textContent = precio;
+  if (img) img.innerHTML = `<span>[Imagen Grande Prod ${id}]</span>`;
+
   // Actualizar estado del botón de favoritos
   if (favBtn) {
-    const isFav = favoritos.some(f => f.id === id);
+    const isFav = favoritos.some((f) => f.id === id);
     const icon = favBtn.querySelector("i");
     if (isFav) {
       favBtn.style.backgroundColor = "var(--primary-blue)";
@@ -545,40 +583,73 @@ function openProduct(id) {
     }
   }
 
-  // Descripción
+  // Texto de descripción simulado
   if (desc) {
-    desc.textContent = product.descripcion;
+    desc.textContent =
+      productData?.descripcion ||
+      "Disfruta de la mejor calidad con este producto exclusivo de Walmart. Diseñado para ofrecer durabilidad, rendimiento y un estilo moderno que se adapta a tus necesidades diarias. Este artículo cuenta con garantía de satisfacción y ha sido seleccionado bajo los más altos estándares de calidad de nuestras marcas.";
   }
 
   // Generar 5 productos relacionados (reutilizando generarTarjeta)
   if (relatedGrid) {
-    let allProds = ITEMS.filter(p => p.id !== id);
-    // Priorizar productos de la misma categoría
-    let sameCat = allProds.filter(p => p.categoria === product.categoria);
-    let others = allProds.filter(p => p.categoria !== product.categoria);
-    
+    let allProds = categorias
+      .flatMap((c) => c.productos)
+      .filter((p) => p.id !== id);
+    // Priorizar productos de la misma categoría si existen
+    let sameCat = currentCategory
+      ? currentCategory.productos.filter((p) => p.id !== id)
+      : [];
+    let others = allProds.filter((p) => !sameCat.find((sc) => sc.id === p.id));
+
     let finalRelated = [...sameCat, ...others].slice(0, 5);
-    relatedGrid.innerHTML = finalRelated.map(p => generarTarjeta(p)).join("");
+    relatedGrid.innerHTML = finalRelated.map((p) => generarTarjeta(p)).join("");
   }
 
-  navigate("product", product.nombre, product.categoria);
+  navigate("product", nombre, categoryName);
+}
+
+function abrirCategoria(nombreCat) {
+  const title = $("category-title");
+  const grid = $("category-grid");
+  if (!title || !grid) return;
+
+  title.textContent = nombreCat;
+
+  // Buscar datos reales en la base de datos mock
+  const catData = categorias.find((c) => c.titulo === nombreCat);
+  let gridHTML = "";
+
+  if (catData) {
+    gridHTML = catData.productos.map((p) => generarTarjeta(p)).join("");
+  } else {
+    // Para categorías rápidas, generar items genéricos
+    for (let i = 1; i <= 20; i++) {
+      gridHTML += generarTarjeta({
+        id: 200 + i,
+        nombre: `${nombreCat} Articulo ${i}`,
+        precio: `$${(Math.random() * 500 + 10).toFixed(2)}`,
+      });
+    }
+  }
+
+  grid.innerHTML = gridHTML;
+  navigate("category", nombreCat);
 }
 
 /* =========================================
    Interacciones de Compra y Carrito
    ========================================= */
-function addToCart(id, event) {
-  const product = ITEMS.find(p => p.id === id) || { id, nombre: "Producto", precio: 0 };
-  carrito.push(product);
+function addToCart(id, nombre, precio, event) {
+  carrito.push({ id, nombre, precio });
   const count = $("cartCount");
   if (count) count.textContent = `Carrito (${carrito.length})`;
 
-  announce(`${product.nombre} ha sido agregado al carrito.`);
+  announce(`${nombre} ha sido agregado al carrito.`);
 
   if (event && event.currentTarget) {
     const btn = event.currentTarget;
     btn.classList.add("active");
-    
+
     if (btn.dataset.timeoutId) {
       clearTimeout(parseInt(btn.dataset.timeoutId));
     }
@@ -599,19 +670,28 @@ function removeFromCart(index) {
   renderCart();
 }
 
-function comprarRapido(id) {
-  addToCart(id, null);
+function comprarRapido(id, nombre, precio) {
+  addToCart(id, nombre, precio, null);
   navigate("cart", "Carrito");
 }
 
 function comprarAhoraProdActual() {
   if (productoActual)
-    comprarRapido(productoActual.id);
+    comprarRapido(
+      productoActual.id,
+      productoActual.nombre,
+      productoActual.precio,
+    );
 }
 
 function toggleFavProdActual(event) {
   if (productoActual) {
-    toggleFav(productoActual.id, event);
+    toggleFav(
+      productoActual.id,
+      productoActual.nombre,
+      productoActual.precio,
+      event,
+    );
     // Forzar actualización visual del botón de la página de detalle
     const favBtn = $("detail-fav-btn");
     const isFav = favoritos.some((f) => f.id === productoActual.id);
@@ -630,15 +710,14 @@ function toggleFavProdActual(event) {
   }
 }
 
-function toggleFav(id, event) {
+function toggleFav(id, nombre, precio, event) {
   const index = favoritos.findIndex((f) => f.id === id);
   if (index === -1) {
-    const product = ITEMS.find(p => p.id === id);
-    if (product) favoritos.push(product);
-    announce(`Producto agregado a favoritos.`);
+    favoritos.push({ id, nombre, precio });
+    announce(`${nombre} agregado a favoritos.`);
   } else {
     favoritos.splice(index, 1);
-    announce(`Producto eliminado de favoritos.`);
+    announce(`${nombre} eliminado de favoritos.`);
   }
   // Sincronizar todos los corazones visibles en el sitio
   updateAllFavButtonsUI();
@@ -674,13 +753,12 @@ function renderCart() {
   let total = 0;
   container.innerHTML = carrito
     .map((item, index) => {
-      const price = parsePrice(item.precio);
-      total += price;
+      total += parsePrice(item.precio);
       return `
             <div class="list-item">
                 <div style="display: flex; flex-direction: column; gap: 0.3rem;">
                     <span style="font-size: 1.1rem;">${item.nombre}</span>
-                    <strong style="color: var(--text-blue); font-size: 1.2rem;">${formatPrice(price)}</strong>
+                    <strong style="color: var(--text-blue); font-size: 1.2rem;">${item.precio}</strong>
                 </div>
                 <button style="background: transparent; border: none; font-size: 2rem; color: var(--danger); cursor: pointer; padding: 0 0.5rem;" onclick="removeFromCart(${index})" title="Eliminar del carrito">×</button>
             </div>
@@ -704,7 +782,7 @@ function renderFavs() {
       : favoritos
           .map(
             (item) =>
-              `<div class="list-item"><span>${item.nombre}</span><button class="btn-buy" style="padding: 0.5rem 1rem; border: 2px solid var(--text-blue); color: var(--text-blue); border-radius: 20px;" onclick="openProduct(${item.id})">Ver</button></div>`,
+              `<div class="list-item"><span>${item.nombre}</span><button class="btn-buy" style="padding: 0.5rem 1rem; border: 2px solid var(--text-blue); color: var(--text-blue); border-radius: 20px;" onclick="openProduct(${item.id}, '${item.nombre.replace(/'/g, "\\'")}', '${item.precio}')">Ver</button></div>`,
           )
           .join("");
 }
@@ -745,10 +823,12 @@ function openModal(id) {
 }
 
 function closeModals() {
-  ["loginModal", "registerModal", "checkoutModal", "locationModal"].forEach(id => {
-    const modal = $(id);
-    if (modal) modal.classList.remove("active");
-  });
+  ["loginModal", "registerModal", "checkoutModal", "locationModal"].forEach(
+    (id) => {
+      const modal = $(id);
+      if (modal) modal.classList.remove("active");
+    },
+  );
 }
 
 let curSlide = 0;
@@ -761,6 +841,8 @@ function moveCarousel(step) {
   if (slides.length === 0) return;
   slides[curSlide].classList.remove("active");
   curSlide = (curSlide + step + slides.length) % slides.length;
+  slides[curSlide].classList.add("add-active"); // Usando add-active para evitar conflictos si existe, pero el CSS usa .active
+  // Corrección: El CSS usa .active
   slides[curSlide].classList.add("active");
   clearInterval(slideTimer);
   iniciarCarrusel();
