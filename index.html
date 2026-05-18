@@ -171,41 +171,6 @@
                 Menú
             </h2>
             <button
-                class="menu-item mobile-only"
-                onclick="toggleTheme()"
-                aria-label="Cambiar tema de color (Claro/Oscuro)"
-            >
-                <i
-                    class="fa-solid fa-circle-half-stroke"
-                    aria-hidden="true"
-                ></i>
-                <span>Cambiar Tema</span>
-            </button>
-            <button
-                class="menu-item mobile-only"
-                onclick="navigate('account', 'Mi Cuenta')"
-                aria-label="Ir a Mi Cuenta"
-            >
-                <i class="fa-solid fa-circle-user" aria-hidden="true"></i>
-                <span>Mi Cuenta</span>
-            </button>
-            <button
-                class="menu-item mobile-only"
-                onclick="navigate('favorites', 'Favoritos')"
-                aria-label="Ir a Mis Favoritos"
-            >
-                <i class="fa-solid fa-heart" aria-hidden="true"></i>
-                <span>Favoritos</span>
-            </button>
-            <button
-                class="menu-item mobile-only"
-                onclick="navigate('cart', 'Carrito')"
-                aria-label="Ir al Carrito de compras"
-            >
-                <i class="fa-solid fa-cart-shopping" aria-hidden="true"></i>
-                <span>Carrito</span>
-            </button>
-            <button
                 class="menu-item"
                 onclick="openModal('locationModal')"
                 aria-label="Abrir configuración de ubicación de entrega"
@@ -1056,6 +1021,52 @@
                 </p>
             </div>
         </footer>
+
+        <nav
+            class="bottom-nav mobile-only"
+            aria-label="Navegación inferior móvil"
+        >
+            <button
+                class="nav-item"
+                onclick="navigate('home')"
+                aria-label="Ir a Inicio"
+            >
+                <i class="fa-solid fa-house"></i>
+                <span>Inicio</span>
+            </button>
+            <button
+                class="nav-item"
+                onclick="navigate('account', 'Mi Cuenta')"
+                aria-label="Ir a Cuenta"
+            >
+                <i class="fa-solid fa-circle-user"></i>
+                <span>Cuenta</span>
+            </button>
+            <button
+                class="nav-item"
+                onclick="navigate('favorites', 'Favoritos')"
+                aria-label="Ir a Favoritos"
+            >
+                <i class="fa-solid fa-heart"></i>
+                <span>Favoritos</span>
+            </button>
+            <button
+                class="nav-item"
+                onclick="navigate('cart', 'Carrito')"
+                aria-label="Ir a Carrito"
+            >
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="mobileCartCount">Carrito (0)</span>
+            </button>
+            <button
+                class="nav-item"
+                onclick="toggleTheme()"
+                aria-label="Cambiar Tema"
+            >
+                <i class="fa-solid fa-circle-half-stroke"></i>
+                <span>Tema</span>
+            </button>
+        </nav>
 
         <div
             id="aria-announcer"
