@@ -26,7 +26,7 @@
                 <div class="header-left">
                     <button
                         id="menuBtn"
-                        class="action-btn"
+                        class="action-btn boton-interactivo"
                         aria-label="Abrir menú de navegación"
                     >
                         <i
@@ -74,15 +74,15 @@
                             aria-label="Sugerencias de búsqueda"
                         ></div>
                     </div>
-                    <button id="searchBtn" aria-label="Ejecutar búsqueda">
+                    <button id="searchBtn" class="boton-interactivo" aria-label="Ejecutar búsqueda">
                         Buscar
                     </button>
                 </div>
 
                 <div class="header-actions">
                     <button
-                        class="action-btn"
-                        onclick="toggleTheme()"
+                        id="themeBtn"
+                        class="action-btn boton-interactivo"
                         aria-label="Cambiar Tema claro u oscuro"
                     >
                         <i
@@ -93,7 +93,8 @@
                         <span>Tema</span>
                     </button>
                     <button
-                        class="action-btn"
+                        id="openLoginBtnHeader"
+                        class="action-btn boton-interactivo"
                         onclick="navigate('account', 'Mi Cuenta')"
                         aria-label="Ir a Mi Cuenta"
                     >
@@ -106,7 +107,7 @@
                         <span>Cuenta</span>
                     </button>
                     <button
-                        class="action-btn"
+                        class="action-btn boton-interactivo"
                         onclick="navigate('favorites', 'Favoritos')"
                         aria-label="Ir a Mis Favoritos"
                     >
@@ -119,7 +120,7 @@
                         <span>Favoritos</span>
                     </button>
                     <button
-                        class="action-btn"
+                        class="action-btn boton-interactivo pulso-carrito"
                         onclick="navigate('cart', 'Carrito')"
                         aria-label="Ir al Carrito de compras"
                     >
@@ -134,7 +135,7 @@
                 </div>
             </div>
             <nav
-                class="breadcrumbs"
+                class="breadcrumbs animar-entrada-banner"
                 id="breadcrumb-container"
                 aria-label="Ruta de navegación"
             >
@@ -205,8 +206,8 @@
                 <span>Carrito</span>
             </button>
             <button
+                id="openLocationBtn"
                 class="menu-item"
-                onclick="openModal('locationModal')"
                 aria-label="Abrir configuración de ubicación de entrega"
                 style="
                     width: 100%;
@@ -311,7 +312,6 @@
             <div class="modal-box">
                 <button
                     class="close-modal"
-                    onclick="closeModals()"
                     aria-label="Cerrar inicio de sesión"
                 >
                     ✖
@@ -337,7 +337,7 @@
                         required
                     />
                 </div>
-                <button class="btn-full" onclick="closeModals()">
+                <button class="btn-full boton-interactivo" onclick="closeModals()">
                     Confirmar
                 </button>
             </div>
@@ -353,7 +353,6 @@
             <div class="modal-box">
                 <button
                     class="close-modal"
-                    onclick="closeModals()"
                     aria-label="Cerrar registro"
                 >
                     ✖
@@ -406,7 +405,7 @@
                         required
                     />
                 </div>
-                <button class="btn-full" onclick="closeModals()">
+                <button class="btn-full boton-interactivo" onclick="closeModals()">
                     Registrarse
                 </button>
             </div>
@@ -422,7 +421,6 @@
             <div class="modal-box">
                 <button
                     class="close-modal"
-                    onclick="closeModals()"
                     aria-label="Cerrar ubicación"
                 >
                     ✖
@@ -438,7 +436,7 @@
                         placeholder="Calle, Número, Ciudad..."
                     />
                 </div>
-                <button class="btn-full" onclick="saveLocation()">
+                <button id="btnSaveLocation" class="btn-full boton-interactivo">
                     Guardar Ubicación
                 </button>
             </div>
@@ -454,7 +452,6 @@
             <div class="modal-box" style="max-width: 500px">
                 <button
                     class="close-modal"
-                    onclick="closeModals()"
                     aria-label="Cerrar ticket"
                 >
                     ✖
@@ -480,7 +477,6 @@
                     "
                 ></div>
 
-                <!-- Sección de Dirección en Checkout -->
                 <div id="checkoutAddressSection" style="margin-bottom: 1.5rem">
                     <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem">
                         Dirección de envío
@@ -534,7 +530,6 @@
                     >
                     <select
                         id="paymentMethod"
-                        onchange="togglePaymentFields()"
                         style="
                             padding: 0.8rem;
                             border: 1px solid var(--text-light);
@@ -552,7 +547,6 @@
                     </select>
                 </div>
 
-                <!-- Campos de Tarjeta / PayPal -->
                 <div id="cardFields" class="input-group">
                     <label for="cardNumber">Número de tarjeta</label>
                     <input
@@ -601,7 +595,6 @@
                     </div>
                 </div>
 
-                <!-- Campo para Pago en Tienda (QR) -->
                 <div
                     id="tiendaFields"
                     class="hidden"
@@ -631,14 +624,14 @@
                     </div>
                 </div>
 
-                <button class="btn-full" onclick="finalizarCompra()">
+                <button class="btn-full boton-interactivo" onclick="finalizarCompra()">
                     Confirmar y Pagar
                 </button>
             </div>
         </div>
 
         <main>
-            <div id="view-home">
+            <div id="view-home" class="animar-entrada-banner">
                 <div class="carousel">
                     <button
                         class="car-btn"
@@ -679,7 +672,7 @@
 
             <div id="view-category" class="hidden">
                 <div class="view-header">
-                    <button class="btn-back" onclick="navigate('home')">
+                    <button class="btn-back boton-interactivo" onclick="navigate('home')">
                         ← Volver
                     </button>
                     <h2 id="category-title">Categoría</h2>
@@ -737,6 +730,7 @@
                         </h4>
                         <div style="display: flex; gap: 1rem">
                             <button
+                                class="boton-interactivo"
                                 style="
                                     background-color: transparent;
                                     border: 2px solid var(--text-blue);
@@ -752,6 +746,7 @@
                                 Aumentar Texto (A+)
                             </button>
                             <button
+                                class="boton-interactivo"
                                 style="
                                     background-color: transparent;
                                     border: 2px solid var(--text-blue);
@@ -771,7 +766,8 @@
 
                     <div style="display: flex; gap: 1rem; align-items: stretch">
                         <button
-                            class="btn-primary"
+                            id="openLoginBtn"
+                            class="btn-primary boton-interactivo"
                             style="
                                 border-radius: 30px;
                                 padding: 1rem;
@@ -780,12 +776,12 @@
                                 cursor: pointer;
                                 transition: 0.3s;
                             "
-                            onclick="openModal('loginModal')"
                         >
                             Iniciar Sesión
                         </button>
                         <button
-                            class="btn-primary"
+                            id="openRegisterBtn"
+                            class="btn-primary boton-interactivo"
                             style="
                                 border-radius: 30px;
                                 padding: 1rem;
@@ -794,7 +790,6 @@
                                 cursor: pointer;
                                 transition: 0.3s;
                             "
-                            onclick="openModal('registerModal')"
                         >
                             Registrarse
                         </button>
@@ -804,12 +799,12 @@
 
             <div id="view-product" class="hidden">
                 <div class="view-header">
-                    <button class="btn-back" onclick="navigate('home')">
+                    <button class="btn-back boton-interactivo" onclick="navigate('home')">
                         ← Volver
                     </button>
                 </div>
                 <div class="product-detail-layout">
-                    <div class="detail-image" id="detail-img">
+                    <div class="detail-image tarjeta-hover" id="detail-img">
                         <span>[Imagen Principal del Producto]</span>
                     </div>
                     <div class="detail-info">
@@ -836,7 +831,7 @@
                         <div class="detail-actions">
                             <button
                                 id="detail-fav-btn"
-                                class="btn-buy"
+                                class="btn-buy boton-interactivo"
                                 style="
                                     border: 2px solid var(--accent-yellow);
                                     color: var(--accent-yellow);
@@ -852,7 +847,7 @@
                                 ></i>
                             </button>
                             <button
-                                class="btn-buy"
+                                class="btn-buy boton-interactivo"
                                 style="
                                     border: 2px solid var(--text-blue);
                                     color: var(--text-blue);
@@ -862,7 +857,7 @@
                                 <i class="fa-solid fa-money-bill"></i>
                                 Comprar ahora
                             </button>
-                            <button class="btn-primary" id="detail-add-cart">
+                            <button class="btn-primary boton-interactivo" id="detail-add-cart">
                                 <i class="fa-solid fa-cart-plus"></i>
                                 Agregar al carrito
                             </button>
@@ -870,7 +865,6 @@
                     </div>
                 </div>
 
-                <!-- Sección de Productos Relacionados -->
                 <div class="related-section" style="margin-top: 4rem">
                     <hr class="section-divider" />
                     <h3 class="section-title">Productos relacionados</h3>
@@ -880,7 +874,7 @@
 
             <div id="view-faq" class="hidden">
                 <div class="view-header">
-                    <button class="btn-back" onclick="navigate('home')">
+                    <button class="btn-back boton-interactivo" onclick="navigate('home')">
                         ← Volver
                     </button>
                     <h2>Centro de Ayuda</h2>
@@ -969,7 +963,7 @@
 
             <div id="view-cart" class="hidden">
                 <div class="view-header">
-                    <button class="btn-back" onclick="navigate('home')">
+                    <button class="btn-back boton-interactivo" onclick="navigate('home')">
                         ← Seguir comprando
                     </button>
                     <h2>Tu Carrito</h2>
@@ -1000,7 +994,7 @@
                         </h3>
                         <div style="display: flex; justify-content: flex-end">
                             <button
-                                class="btn-primary"
+                                class="btn-primary boton-interactivo"
                                 style="
                                     border-radius: 30px;
                                     padding: 1rem 3rem;
@@ -1020,7 +1014,7 @@
 
             <div id="view-favorites" class="hidden">
                 <div class="view-header">
-                    <button class="btn-back" onclick="navigate('home')">
+                    <button class="btn-back boton-interactivo" onclick="navigate('home')">
                         ← Volver
                     </button>
                     <h2>Tus Favoritos</h2>
@@ -1037,6 +1031,7 @@
                     <h4>Atención al Cliente</h4>
                     <button
                         type="button"
+                        class="boton-interactivo"
                         onclick="navigate('faq', 'Centro de Ayuda')"
                     >
                         Centro de Ayuda
