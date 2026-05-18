@@ -511,7 +511,21 @@ function addToCart(id, event) {
     if (mobileCart) mobileCart.textContent = countText;
     announce(`${product.nombre} agregado.`);
   }
-  if (event && event.currentTarget) {
+
+  // Micro-interacción para el botón de detalle de producto
+  const detailBtn = $("detail-add-cart");
+  if (detailBtn && (event?.currentTarget === detailBtn || !event)) {
+    const originalHTML = detailBtn.innerHTML;
+    detailBtn.classList.add("added-success");
+    detailBtn.innerHTML = `<i class="fa-solid fa-check"></i> Añadido`;
+
+    setTimeout(() => {
+      detailBtn.classList.remove("added-success");
+      detailBtn.innerHTML = originalHTML;
+    }, 1000);
+  }
+
+  if (event && event.currentTarget && event.currentTarget !== detailBtn) {
     const btn = event.currentTarget;
     btn.classList.add("active");
     setTimeout(() => btn.classList.remove("active"), 2000);
