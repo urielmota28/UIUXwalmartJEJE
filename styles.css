@@ -1133,12 +1133,17 @@ footer {
     }
 }
 
-.btn-primary.added-success {
+.btn-primary.added-success,
+.btn-add-icon.added-success {
     background-color: #28a745 !important; /* Verde Walmart / Éxito */
     animation: buttonPulse 0.6s ease-out;
+    width: auto;
+    padding: 0 1rem;
+    color: white;
 }
 
-.btn-primary.added-success i {
+.btn-primary.added-success i,
+.btn-add-icon.added-success i {
     animation: cartPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
