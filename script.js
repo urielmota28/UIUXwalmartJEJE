@@ -205,6 +205,7 @@ function iniciarOnboarding() {
   const driverObj = window.driver.js.driver({
     showProgress: true,
     animate: true,
+    overlayColor: "rgba(0,0,0,0.75)",
     nextBtnText: "Siguiente",
     prevBtnText: "Anterior",
     doneBtnText: "Finalizar",
@@ -212,11 +213,13 @@ function iniciarOnboarding() {
     popoverClass: "walmart-onboarding-popover",
     steps: [
       {
+        element: "body",
         popover: {
           title: "Bienvenido a Walmart",
           description:
             "Te mostraremos rapidamente como usar nuestra nueva tienda.",
-          position: "center",
+          side: "center",
+          align: "center",
         },
       },
       {

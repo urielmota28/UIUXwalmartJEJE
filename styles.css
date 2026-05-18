@@ -1231,6 +1231,7 @@ body.dark-mode #savedAddressDisplay {
 /* =========================================
    Onboarding (Driver.js) Overrides
    ========================================= */
+/* Asegurar que el overlay y popover estén por encima de todo */
 .driver-popover.walmart-onboarding-popover {
     font-family: 'Poppins', sans-serif !important;
     border-radius: var(--border-radius);
@@ -1238,14 +1239,17 @@ body.dark-mode #savedAddressDisplay {
     max-width: 350px;
     background-color: var(--white);
     color: var(--text-dark);
+    z-index: 1000000000 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
 .driver-popover.walmart-onboarding-popover .driver-popover-title {
     font-family: 'Poppins', sans-serif !important;
     font-weight: 700;
     color: var(--primary-blue);
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
+    display: block;
 }
 
 .driver-popover.walmart-onboarding-popover .driver-popover-description {
@@ -1253,52 +1257,70 @@ body.dark-mode #savedAddressDisplay {
     color: var(--text-dark);
     font-size: 0.95rem;
     line-height: 1.5;
+    margin-bottom: 1rem;
 }
 
+/* Fix para los botones que aparecían mal alineados o no clicables */
 .driver-popover.walmart-onboarding-popover .driver-popover-footer {
-    margin-top: 1.5rem;
-    display: flex;
+    margin-top: 1rem;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
     gap: 0.5rem;
-    justify-content: flex-end;
 }
 
-/* Reutilizando estilos de botones de la app */
+.driver-popover.walmart-onboarding-popover .driver-popover-navigation-btns {
+    display: flex !important;
+    gap: 0.5rem !important;
+}
+
+.driver-popover.walmart-onboarding-popover .driver-popover-next-btn,
+.driver-popover.walmart-onboarding-popover .driver-popover-prev-btn,
+.driver-popover.walmart-onboarding-popover .driver-popover-close-btn {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: bold !important;
+    font-size: 0.85rem !important;
+    padding: 0.6rem 1.2rem !important;
+    border-radius: 20px !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    text-shadow: none !important;
+    transition: var(--transition) !important;
+}
+
 .driver-popover.walmart-onboarding-popover .driver-popover-next-btn {
     background-color: var(--primary-blue) !important;
     color: #fff !important;
     border: none !important;
-    border-radius: 20px !important;
-    padding: 0.5rem 1.2rem !important;
-    font-weight: bold !important;
-    font-family: 'Poppins', sans-serif !important;
-    text-shadow: none !important;
 }
 
 .driver-popover.walmart-onboarding-popover .driver-popover-prev-btn {
     background-color: var(--white) !important;
     color: var(--text-dark) !important;
     border: 1px solid #ccc !important;
-    border-radius: 20px !important;
-    padding: 0.5rem 1.2rem !important;
-    font-weight: bold !important;
-    font-family: 'Poppins', sans-serif !important;
-    text-shadow: none !important;
 }
 
 .driver-popover.walmart-onboarding-popover .driver-popover-next-btn:hover {
     background-color: var(--secondary-blue) !important;
+    transform: translateY(-1px);
 }
 
 .driver-popover.walmart-onboarding-popover .driver-popover-prev-btn:hover {
     background-color: var(--bg-light) !important;
+    transform: translateY(-1px);
 }
 
 .driver-popover.walmart-onboarding-popover .driver-popover-progress-text {
     color: var(--text-light) !important;
     font-family: 'Poppins', sans-serif !important;
     font-size: 0.8rem;
+    font-weight: 500;
 }
 
-.driver-popover.walmart-onboarding-popover .driver-popover-close-btn {
-    color: var(--text-light) !important;
+/* Asegurar que el resaltado sea visible */
+.driver-stage {
+    z-index: 100000000 !important;
+}
+.driver-overlay {
+    z-index: 10000000 !important;
 }
