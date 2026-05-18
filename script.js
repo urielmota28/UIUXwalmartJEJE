@@ -247,7 +247,10 @@ function createOnboardingUI() {
   popover.id = 'onboardingPopover';
   popover.className = 'onboarding-popover';
   popover.innerHTML = `
-    <h3 id="onboardingTitle"></h3>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+      <h3 id="onboardingTitle" style="margin: 0;"></h3>
+      <button id="onboardingSkip" class="btn-back" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; border: none; background: #f0f0f0;">Omitir</button>
+    </div>
     <p id="onboardingDesc"></p>
     <div class="onboarding-footer">
       <span class="step-indicator" id="onboardingStepIndicator"></span>
@@ -261,6 +264,7 @@ function createOnboardingUI() {
 
   $("onboardingNext").onclick = nextOnboardingStep;
   $("onboardingPrev").onclick = prevOnboardingStep;
+  $("onboardingSkip").onclick = finishOnboarding;
 }
 
 function renderOnboardingStep() {
@@ -328,11 +332,11 @@ function finishOnboarding() {
   $("onboardingOverlay").classList.remove("active");
   $("onboardingPopover").classList.remove("active");
   $("onboardingHighlight").style.display = "none";
-  localStorage.setItem("onboardingCompletado", "true");
+  sessionStorage.setItem("onboardingCompletado", "true");
 }
 
 function initOnboarding() {
-  if (localStorage.getItem("onboardingCompletado")) return;
+  if (sessionStorage.getItem("onboardingCompletado")) return;
   createOnboardingUI();
   renderOnboardingStep();
 }
