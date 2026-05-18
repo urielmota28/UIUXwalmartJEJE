@@ -37,13 +37,20 @@ const announce = (message) => {
 };
 
 /* =========================================
-   Estado de la Aplicación
+   Estado de la Aplicación & Persistencia
    ========================================= */
 // Nota: 'ITEMS' viene de Data.js
-let carrito = [];
-let favoritos = [];
+let carrito = JSON.parse(localStorage.getItem("walmart_cart")) || [];
+let favoritos = JSON.parse(localStorage.getItem("walmart_favs")) || [];
+let ubicacionUsuario = localStorage.getItem("walmart_location") || "";
 let productoActual = null;
-let ubicacionUsuario = "";
+
+// Sincroniza el estado actual con el almacenamiento del navegador
+function updateStorage() {
+  localStorage.setItem("walmart_cart", JSON.stringify(carrito));
+  localStorage.setItem("walmart_favs", JSON.stringify(favoritos));
+  localStorage.setItem("walmart_location", ubicacionUsuario);
+}
 
 /* =========================================
    Gestión de Ubicación
@@ -54,6 +61,7 @@ function saveLocation() {
     ubicacionUsuario = input;
     const locText = $("locationText");
     if (locText) locText.textContent = `📍 ${ubicacionUsuario}`;
+    updateStorage();
     closeModals();
     announce(`Ubicación actualizada a: ${ubicacionUsuario}`);
   }
@@ -68,11 +76,11 @@ function togglePaymentFields() {
   const tiendaFields = $("tiendaFields");
 
   if (method === "tienda") {
-    cardFields.classList.add("hidden");
-    tiendaFields.classList.remove("hidden");
+    if (cardFields) cardFields.classList.add("hidden");
+    if (tiendaFields) tiendaFields.classList.remove("hidden");
   } else {
-    cardFields.classList.remove("hidden");
-    tiendaFields.classList.add("hidden");
+    if (cardFields) cardFields.classList.remove("hidden");
+    if (tiendaFields) tiendaFields.classList.add("hidden");
   }
 }
 
@@ -81,12 +89,13 @@ function toggleNewAddress(forceShowForm = false) {
   const form = $("newAddressForm");
 
   if (ubicacionUsuario && !forceShowForm) {
-    display.classList.remove("hidden");
-    form.classList.add("hidden");
-    $("displayShippingAddress").textContent = ubicacionUsuario;
+    if (display) display.classList.remove("hidden");
+    if (form) form.classList.add("hidden");
+    const displayShipping = $("displayShippingAddress");
+    if (displayShipping) displayShipping.textContent = ubicacionUsuario;
   } else {
-    display.classList.add("hidden");
-    form.classList.remove("hidden");
+    if (display) display.classList.add("hidden");
+    if (form) form.classList.remove("hidden");
   }
 }
 
@@ -106,16 +115,24 @@ function abrirCheckout() {
   resumenHTML += "</ul>";
   resumenHTML += `<div style="text-align: right; font-size: 1.1rem; color: var(--text-blue); margin-top: 0.5rem;"><strong>Total: ${formatPrice(total)}</strong></div>`;
 
-  $("checkoutSummary").innerHTML = resumenHTML;
+  const summaryContainer = $("checkoutSummary");
+  if (summaryContainer) summaryContainer.innerHTML = resumenHTML;
+  
   toggleNewAddress();
-  $("paymentMethod").value = "visa";
-  togglePaymentFields();
+  
+  const paymentMethodSelect = $("paymentMethod");
+  if (paymentMethodSelect) {
+    paymentMethodSelect.value = "visa";
+    togglePaymentFields();
+  }
+  
   openModal("checkoutModal");
 }
 
 function finalizarCompra() {
-  const method = $("paymentMethod").value;
-  const address = $("checkoutNewAddress").value || ubicacionUsuario;
+  const method = $("paymentMethod") ? $("paymentMethod").value : "visa";
+  const addressInput = $("checkoutNewAddress");
+  const address = (addressInput && addressInput.value) || ubicacionUsuario;
   let errores = [];
 
   if (!address.trim()) {
@@ -123,9 +140,9 @@ function finalizarCompra() {
   }
 
   if (method !== "tienda") {
-    const card = $("cardNumber").value.trim();
-    const expiry = $("cardExpiry").value.trim();
-    const cvv = $("cardCVV").value.trim();
+    const card = $("cardNumber") ? $("cardNumber").value.trim() : "";
+    const expiry = $("cardExpiry") ? $("cardExpiry").value.trim() : "";
+    const cvv = $("cardCVV") ? $("cardCVV").value.trim() : "";
 
     if (!card) errores.push("- El número de tarjeta es obligatorio.");
     else if (card.length < 15 || card.length > 16) errores.push("- El número de tarjeta debe tener 15 o 16 dígitos.");
@@ -144,7 +161,11 @@ function finalizarCompra() {
 
   alert("¡Compra realizada con éxito!");
   carrito = [];
-  $("cartCount").textContent = `Carrito (0)`;
+  updateStorage();
+  
+  const cartCountEl = $("cartCount");
+  if (cartCountEl) cartCountEl.textContent = `Carrito (0)`;
+  
   renderCart();
   closeModals();
   navigate("home");
@@ -188,21 +209,59 @@ function generarTarjeta(prod) {
 }
 
 /* =========================================
-   Renderizado Inicial
+   Renderizado Inicial e Inicialización
    ========================================= */
 function initApp() {
+  // 1. Renderizados iniciales de componentes de interfaz
   renderSections();
   setupSidebar();
   setupCategoriasRapidas();
   iniciarCarrusel();
   setupSearch();
 
+  // 2. Cargar estado guardado en LocalStorage a la UI
+  const cartCountEl = $("cartCount");
+  if (cartCountEl) cartCountEl.textContent = `Carrito (${carrito.length})`;
+
+  if (ubicacionUsuario) {
+    const locText = $("locationText");
+    if (locText) locText.textContent = `📍 ${ubicacionUsuario}`;
+  }
+  updateAllFavButtonsUI();
+
+  // 3. Vinculación de eventos fijos del DOM
   const addCartBtn = $("detail-add-cart");
   if (addCartBtn) {
     addCartBtn.onclick = function (e) {
       if (productoActual) addToCart(productoActual.id, e);
     };
   }
+
+  const themeBtn = $("themeBtn");
+  if (themeBtn) themeBtn.onclick = toggleTheme;
+
+  const paymentMethodSelect = $("paymentMethod");
+  if (paymentMethodSelect) {
+    paymentMethodSelect.addEventListener("change", togglePaymentFields);
+  }
+
+  // 4. Listeners para apertura de Modales
+  const loginBtn = $("openLoginBtn");
+  if (loginBtn) loginBtn.onclick = () => openModal("loginModal");
+
+  const registerBtn = $("openRegisterBtn");
+  if (registerBtn) registerBtn.onclick = () => openModal("registerModal");
+
+  const locationBtn = $("openLocationBtn");
+  if (locationBtn) locationBtn.onclick = () => openModal("locationModal");
+
+  const saveLocBtn = $("btnSaveLocation");
+  if (saveLocBtn) saveLocBtn.onclick = saveLocation;
+
+  // Cierre genérico para cualquier botón con clase .close-modal
+  document.querySelectorAll(".close-modal").forEach(btn => {
+    btn.onclick = closeModals;
+  });
 }
 
 const videosTendencia = [
@@ -268,7 +327,7 @@ function renderSections() {
 }
 
 function setupCategoriasRapidas() {
-  const categoriasInfo = [
+  const categoriesInfo = [
     { nombre: "Ahorro", file: "Ahorro.jpg" },
     { nombre: "Flash Deals", file: "Flash Deals.jpg" },
     { nombre: "Nuestras Marcas", file: "Nuestras Marcas.jpg" },
@@ -280,7 +339,7 @@ function setupCategoriasRapidas() {
   ];
   const container = $("quickCategories");
   if (!container) return;
-  container.innerHTML = categoriasInfo.map((cat) => `
+  container.innerHTML = categoriesInfo.map((cat) => `
     <button type="button" class="cat-item" onclick="abrirCategoriaSimulada('${cat.nombre}')">
         <div class="cat-img" style="overflow: hidden;">
             <img src="${cat.file}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
@@ -415,11 +474,11 @@ function openProduct(id) {
     if (isFav) {
       favBtn.style.backgroundColor = "var(--primary-blue)";
       favBtn.style.color = "white";
-      icon.classList.replace("fa-regular", "fa-solid");
+      if (icon) icon.classList.replace("fa-regular", "fa-solid");
     } else {
       favBtn.style.backgroundColor = "transparent";
       favBtn.style.color = "var(--accent-yellow)";
-      icon.classList.replace("fa-solid", "fa-regular");
+      if (icon) icon.classList.replace("fa-solid", "fa-regular");
     }
   }
 
@@ -438,7 +497,9 @@ function addToCart(id, event) {
   const product = ITEMS.find(p => p.id === id);
   if (product) {
     carrito.push(product);
-    $("cartCount").textContent = `Carrito (${carrito.length})`;
+    const cartCountEl = $("cartCount");
+    if (cartCountEl) cartCountEl.textContent = `Carrito (${carrito.length})`;
+    updateStorage();
     announce(`${product.nombre} agregado.`);
   }
   if (event && event.currentTarget) {
@@ -450,7 +511,9 @@ function addToCart(id, event) {
 
 function removeFromCart(index) {
   carrito.splice(index, 1);
-  $("cartCount").textContent = `Carrito (${carrito.length})`;
+  const cartCountEl = $("cartCount");
+  if (cartCountEl) cartCountEl.textContent = `Carrito (${carrito.length})`;
+  updateStorage();
   renderCart();
 }
 
@@ -468,7 +531,10 @@ function toggleFav(id, event) {
   if (index === -1) {
     const product = ITEMS.find(p => p.id === id);
     if (product) favoritos.push(product);
-  } else favoritos.splice(index, 1);
+  } else {
+    favoritos.splice(index, 1);
+  }
+  updateStorage();
   updateAllFavButtonsUI();
 }
 
@@ -477,15 +543,17 @@ function toggleFavProdActual(event) {
     toggleFav(productoActual.id, event);
     const isFav = favoritos.some(f => f.id === productoActual.id);
     const favBtn = $("detail-fav-btn");
-    const icon = favBtn.querySelector("i");
-    if (isFav) {
-      favBtn.style.backgroundColor = "var(--primary-blue)";
-      favBtn.style.color = "white";
-      icon.classList.replace("fa-regular", "fa-solid");
-    } else {
-      favBtn.style.backgroundColor = "transparent";
-      favBtn.style.color = "var(--accent-yellow)";
-      icon.classList.replace("fa-solid", "fa-regular");
+    if (favBtn) {
+      const icon = favBtn.querySelector("i");
+      if (isFav) {
+        favBtn.style.backgroundColor = "var(--primary-blue)";
+        favBtn.style.color = "white";
+        if (icon) icon.classList.replace("fa-regular", "fa-solid");
+      } else {
+        favBtn.style.backgroundColor = "transparent";
+        favBtn.style.color = "var(--accent-yellow)";
+        if (icon) icon.classList.replace("fa-solid", "fa-regular");
+      }
     }
   }
 }
@@ -507,12 +575,15 @@ function updateAllFavButtonsUI() {
 
 function renderCart() {
   const container = $("cart-list");
+  const footer = $("cart-footer");
   if (!container) return;
+  
   if (carrito.length === 0) {
     container.innerHTML = "<p>Tu carrito está vacío.</p>";
-    $("cart-footer").style.display = "none";
+    if (footer) footer.style.display = "none";
     return;
   }
+  
   let total = 0;
   container.innerHTML = carrito.map((item, index) => {
     const price = parsePrice(item.precio);
@@ -527,8 +598,10 @@ function renderCart() {
             </div>
         `;
   }).join("");
-  $("cart-footer").style.display = "block";
-  $("cart-total").textContent = `Total: ${formatPrice(total)}`;
+  
+  if (footer) footer.style.display = "block";
+  const totalEl = $("cart-total");
+  if (totalEl) totalEl.textContent = `Total: ${formatPrice(total)}`;
 }
 
 function renderFavs() {
@@ -542,13 +615,20 @@ function renderFavs() {
 }
 
 /* =========================================
-   UI
+   UI e Interfaz General
    ========================================= */
 function setupSidebar() {
-  const toggle = () => { $("sidebar").classList.toggle("active"); $("sidebarOverlay").classList.toggle("active"); };
-  $("menuBtn").addEventListener("click", toggle);
-  $("closeSidebar").addEventListener("click", toggle);
-  $("sidebarOverlay").addEventListener("click", toggle);
+  const toggle = () => { 
+    $("sidebar").classList.toggle("active"); 
+    $("sidebarOverlay").classList.toggle("active"); 
+  };
+  const menuBtn = $("menuBtn");
+  const closeSidebar = $("closeSidebar");
+  const sidebarOverlay = $("sidebarOverlay");
+
+  if (menuBtn) menuBtn.addEventListener("click", toggle);
+  if (closeSidebar) closeSidebar.addEventListener("click", toggle);
+  if (sidebarOverlay) sidebarOverlay.addEventListener("click", toggle);
 }
 
 function toggleTheme() { document.body.classList.toggle("dark-mode"); }
@@ -559,9 +639,17 @@ function changeFontSize(step) {
   html.style.fontSize = (size + step * 2) + "px";
 }
 
-function openModal(id) { $(id).classList.add("active"); }
+function openModal(id) { 
+  const modal = $(id);
+  if (modal) modal.classList.add("active"); 
+}
 
-function closeModals() { ["loginModal", "registerModal", "checkoutModal", "locationModal"].forEach(id => $(id).classList.remove("active")); }
+function closeModals() { 
+  ["loginModal", "registerModal", "checkoutModal", "locationModal"].forEach(id => {
+    const modal = $(id);
+    if (modal) modal.classList.remove("active");
+  }); 
+}
 
 let curSlide = 0;
 let slideTimer;
@@ -572,7 +660,9 @@ function moveCarousel(step) {
   slides[curSlide].classList.remove("active");
   curSlide = (curSlide + step + slides.length) % slides.length;
   slides[curSlide].classList.add("active");
-  clearInterval(slideTimer); iniciarCarrusel();
+  clearInterval(slideTimer); 
+  iniciarCarrusel();
 }
 
+// Inicialización de la App cuando el DOM esté completamente listo
 document.addEventListener("DOMContentLoaded", initApp);
