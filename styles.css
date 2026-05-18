@@ -715,9 +715,43 @@ main {
 }
 
 @media (max-width: 768px) {
-    .product-grid {
+    /* Comportamiento de Carrusel Deslizable exclusivo para Dashboard en Móvil */
+    #view-home .product-grid, 
+    #related-grid {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        -webkit-overflow-scrolling: touch;
+        grid-template-columns: none; /* Desactivar grid */
+    }
+
+    /* Ocultar barra de scroll de forma estética */
+    #view-home .product-grid::-webkit-scrollbar,
+    #related-grid::-webkit-scrollbar {
+        display: none;
+    }
+    
+    #view-home .product-grid,
+    #related-grid {
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE/Edge */
+    }
+
+    #view-home .product-card,
+    #related-grid .product-card {
+        flex: 0 0 75%; /* Ancho relativo para ver la siguiente tarjeta */
+        scroll-snap-align: start;
+        margin-bottom: 0; /* Evitar saltos en flex */
+    }
+
+    /* Mantener grid original en vista de categorías */
+    #category-grid {
+        display: grid;
         grid-template-columns: repeat(2, 1fr);
     }
+
     header {
         flex-wrap: wrap;
         padding: 0.75rem 1rem;
