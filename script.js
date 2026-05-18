@@ -441,9 +441,7 @@ function navigate(viewId, viewName = "", categoryName = "") {
   }
   const breadcrumb = $("breadcrumb-container");
   if (breadcrumb) {
-    if (viewId === "home")
-      breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button>`;
-    else if (viewId === "product" && categoryName) {
+    if (viewId === "product" && categoryName) {
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <button type="button" onclick="abrirCategoria('${categoryName}')">${categoryName}</button> > <span style="font-weight:bold;">${viewName}</span>`;
     } else
       breadcrumb.innerHTML = `<button type="button" onclick="navigate('home')">Inicio</button> > <span style="font-weight:bold;">${viewName}</span>`;
