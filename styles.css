@@ -767,7 +767,7 @@ main {
     }
     /* Ocultar las acciones del header y el texto del logo en móvil */
     .header-actions,
-    .logo-container span {
+    .logo-container h1 {
         display: none !important;
     }
     /* Reducir tamaño del logo en móvil */
